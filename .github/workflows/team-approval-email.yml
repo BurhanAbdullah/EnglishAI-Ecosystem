@@ -31,16 +31,6 @@ jobs:
             echo "No applicant email found in the application issue."
             exit 1
           fi
-          python - <<'PY' > /tmp/payload.json
-          import json, os
-          body = {
-            "from": os.environ["EMAIL_FROM"],
-            "to": [os.environ["EMAIL"]] if "EMAIL" in os.environ else [],
-            "subject": "EnglishAI-Ecosystem team application approved",
-            "text": f"Hello,\n\nYour EnglishAI-Ecosystem group application has been approved by {os.environ['LEAD_NAME']}. Thank you for your interest in contributing to the project.\n\nYour application: {os.environ['ISSUE_TITLE']}\n\nThe project lead will follow up with the next collaboration steps.\n\nEnglishAI-Ecosystem\nBurhan Abdullah & Dr. Mudasir Rahman"
-          }
-          print(json.dumps(body))
-          PY
           export EMAIL
           python - <<'PY' > /tmp/payload.json
           import json, os
