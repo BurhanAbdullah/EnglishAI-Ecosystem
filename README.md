@@ -6,9 +6,9 @@ EnglishAI-Ecosystem is designed as a learning platform rather than a chatbot-onl
 
 ## Live website
 
-**EnglishAI Ecosystem:** https://burhanabdullah.github.io/englishai/index.html
+**EnglishAI Ecosystem:** https://burhanabdullah.github.io/EnglishAI-Ecosystem/
 
-The public landing page uses the EnglishAI Ecosystem logo and the system architecture visual, and provides a direct link to this repository.
+The project website is deployed from the `englishai/` and `web/` frontend assets through GitHub Pages Actions. The landing page uses the EnglishAI Ecosystem logo, project banner, interactive learner interface, and system architecture visual.
 
 ## Web experience
 
@@ -92,6 +92,7 @@ EnglishAI-Ecosystem/
 │   └── evaluation/
 ├── englishai/
 │   ├── index.html
+│   ├── banner.svg
 │   ├── logo.svg
 │   └── architecture.svg
 ├── web/
