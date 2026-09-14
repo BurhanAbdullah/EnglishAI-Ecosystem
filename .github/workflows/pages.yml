@@ -39,6 +39,7 @@ jobs:
           mkdir -p _site
           cp englishai/index.html _site/index.html
           cp englishai/banner.svg _site/banner.svg
+          cp englishai/banner-dark.svg _site/banner-dark.svg
           cp englishai/logo.svg _site/logo.svg
           cp englishai/architecture.svg _site/architecture.svg
           cp web/styles.css _site/styles.css
@@ -56,6 +57,7 @@ jobs:
           test -s _site/app.js
           test -s _site/logo.svg
           test -s _site/banner.svg
+          test -s _site/banner-dark.svg
           test -s _site/architecture.svg
 
       - name: Upload Pages artifact
