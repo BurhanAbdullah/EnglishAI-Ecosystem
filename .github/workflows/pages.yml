@@ -27,11 +27,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-
-      - name: Build website artifact
+      - name: Build standalone website artifact
         shell: bash
         run: |
           set -euo pipefail
@@ -39,27 +37,21 @@ jobs:
           mkdir -p _site
           cp englishai/*.html _site/
           cp englishai/*.svg _site/
-          cp englishai/site.css _site/site.css
+          cp englishai/site-v2.css _site/site-v2.css
           cp englishai/site.js _site/site.js
-          cp web/styles.css _site/styles.css
-          cp web/app.js _site/app.js
           test -s _site/index.html
           test -s _site/architecture.html
           test -s _site/team.html
           test -s _site/contribute.html
           test -s _site/join.html
-          test -s _site/site.css
+          test -s _site/site-v2.css
           test -s _site/site.js
           test -s _site/logo.svg
-          test -s _site/banner.svg
-          test -s _site/banner-dark.svg
           test -s _site/architecture.svg
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
