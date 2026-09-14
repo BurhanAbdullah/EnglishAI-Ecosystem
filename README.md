@@ -1,239 +1,199 @@
 # EnglishAI-Ecosystem
 
-<img width="2560" height="640" alt="banner" src="https://github.com/user-attachments/assets/0c5a1b56-b01e-462a-8a19-a03779f45217" />
+> A local-first, retrieval-augmented, MCP-enabled software architecture for AI-assisted English language learning and teaching.
 
+## 1. Scope and objective
 
-> A local-first, RAG- and MCP-enabled software ecosystem for teaching English as a second or additional language.
+EnglishAI-Ecosystem is a modular software and research framework for English as a second or additional language. The architecture treats language-model inference as one component of a larger learning system comprising knowledge resources, retrieval, executable learning capabilities, learner state, assessment, provenance, governance, and evaluation.
 
-EnglishAI-Ecosystem is being developed as a modular learning and research platform rather than as a conventional chatbot wrapper. The system combines English-learning resources, structured learner context, retrieval-augmented generation (RAG), configurable local language-model inference, Model Context Protocol (MCP) services, assessment, provenance, teacher controls, and an adaptive learning loop.
-
-The repository is intentionally separated into two layers of communication:
-
-- **The website (`englishai/`)** is the public-facing product/project presentation: visual architecture, team, participation, contribution pathways, and project overview.
-- **This README and the `docs/` tree** are the technical documentation layer: architecture, interfaces, contracts, implementation decisions, security requirements, development procedures, testing, and research direction.
-
-The website should remain concise and accessible. The repository documentation should remain technically explicit and implementation-oriented.
-
----
-
-## 1. Project leadership
-
-**Burhan Abdullah** — Project Lead · Lead Contributor  
-GitHub: https://github.com/BurhanAbdullah
-
-**Dr. Mudasir Rahman** — Project Lead · Lead Contributor  
-GitHub: https://github.com/Drmudasirrahman
-
-The project accepts contributions from the wider community. Direct repository contributions and coordinated group participation are intentionally separate workflows; joining the collaboration group is not a prerequisite for submitting ordinary open-source contributions.
-
----
-
-## 2. System objective
-
-The primary objective is to construct an extensible AI-assisted English-learning environment in which language-model inference is only one component of a larger learning system.
-
-The target learning loop is:
+The target pedagogical loop is:
 
 ```text
-ASK
-  ↓
-EXPLAIN
-  ↓
-PRACTISE
-  ↓
-ATTEMPT
-  ↓
-FEEDBACK
-  ↓
-RETRY
-  ↓
-IMPROVE
+ASK → EXPLAIN → PRACTISE → ATTEMPT → FEEDBACK → RETRY → IMPROVE
 ```
 
-The architecture is intended to support both learner-facing and teacher-facing workflows. A learner should be able to request an explanation, practise a skill, receive diagnostic feedback, and continue with an appropriately targeted activity. A teacher should be able to work with approved resources, learning activities, rubrics, assessment settings, and learner progress where those controls are enabled.
+The system is designed to support learner-facing and teacher-facing workflows while keeping currently implemented components distinct from proposed production components.
 
-The system therefore treats an AI response as one event in a pedagogical workflow, not as the final product.
+## 2. Architectural model
 
----
-
-## 3. Design principles
-
-### 3.1 Learner-centred execution
-
-Learning activities are represented around learner context, proficiency, target skill, learning goal, previous feedback, and assessment signals. The model is not expected to infer all of this implicitly from a conversation.
-
-### 3.2 Evidence-grounded generation
-
-Where an answer depends on a controlled English-learning resource, retrieval should provide explicit evidence and provenance metadata. The intended flow is:
+The system is decomposed into four principal concerns:
 
 ```text
-Source resources
-      ↓
-Ingestion / preprocessing
-      ↓
-Metadata
-      ↓
-Indexing / embeddings
-      ↓
-Retrieval
-      ↓
-Evidence set
-      ↓
-LLM generation
-      ↓
-Answer + provenance
+Knowledge
+    │
+    ├── approved resources
+    ├── metadata
+    └── retrieval/evidence
+
+Inference
+    │
+    ├── local model/runtime
+    └── language generation
+
+Capabilities
+    │
+    ├── MCP services
+    ├── schemas
+    └── bounded operations
+
+Learning state
+    │
+    ├── learner context
+    ├── attempts
+    ├── assessment signals
+    └── progress/mastery state
 ```
 
-### 3.3 Local-first inference
-
-“Local LLM” describes a deployment and control model; it does **not** mean institution-only AI.
-
-A local model may be operated by an individual, research group, school, university, organisation, laboratory, or another deployment owner. The important architectural property is that the operator can control or configure the model/runtime environment, hardware allocation, access boundaries, model selection, update strategy, knowledge connections, and tool permissions.
-
-The system is therefore designed so that model inference is not conceptually tied to one institution or one infrastructure provider.
-
-### 3.4 Explicit tool boundaries
-
-Specialised operations are separated into MCP services rather than being hidden inside a monolithic prompt or application function. Tools have explicit schemas and should be validated before execution.
-
-### 3.5 Provenance as data
-
-Source information is represented structurally rather than appended as an informal citation string after generation. Provenance can include source identifier, title, locator, version, URI, and retrieval timestamp.
-
-### 3.6 Security and governance by construction
-
-Authentication, authorization, least privilege, tool allow-lists, validation, provenance, audit events, data retention, and credential isolation are architectural requirements for production deployment.
-
-### 3.7 Research reproducibility
-
-The project structure separates application code, schemas, knowledge processing, MCP services, tests, evaluation, documentation, deployment, and research artifacts so that experiments and engineering changes can be reproduced independently.
-
----
-
-## 4. High-level architecture
-<img width="1640" height="1960" alt="architecture" src="https://github.com/user-attachments/assets/1c307966-23ad-4df7-81fc-d19ec3a15cb6" />
-
-The architecture separates four concerns that are frequently collapsed in chatbot systems:
-
-1. **Knowledge** — what information the system is allowed to use.
-2. **Inference** — how the language model reasons and generates language.
-3. **Capabilities** — what executable operations the system is allowed to invoke.
-4. **Learning state** — what the platform knows about learner progress and goals.
-
----
-
-## 5. Runtime request lifecycle
-
-A representative request can follow the following sequence:
+The intended runtime separation is:
 
 ```text
-1. Learner submits request
+Learner / Teacher
         ↓
-2. Application authenticates request
+Application / Orchestrator
         ↓
-3. Learner context is loaded
+Learner Context ─── Knowledge / RAG
+        ↓                     ↓
+     Capability Selection ← Evidence
         ↓
-4. Intent / target skill is determined
+Schema Validation
         ↓
-5. Orchestrator decides whether retrieval is required
+Authorization / Policy
         ↓
-6. RAG retrieves authorised evidence when required
+MCP Capability
         ↓
-7. Orchestrator selects an appropriate MCP capability
+Structured Result + Provenance
         ↓
-8. Input schema and permission constraints are validated
+Local LLM
         ↓
-9. MCP operation executes
+Explanation / Practice / Feedback
         ↓
-10. Structured result + provenance returned
-        ↓
-11. Local LLM generates learner-facing explanation/feedback
-        ↓
-12. Learning activity is presented
-        ↓
-13. Attempt / assessment signal is recorded where permitted
-        ↓
-14. Learner state can be updated
-        ↓
-15. Next activity can be personalised
+Assessment Signal / Learning State
 ```
 
-The exact production transport and persistence implementation remains a development target. The current repository establishes the modular MCP layer and contracts while the complete application/orchestrator integration is being developed.
+## 3. Runtime request lifecycle
 
----
+A representative request is modelled as:
 
-## 6. English-learning capability model
+```text
+1. Request received
+2. Authentication / service identity established
+3. Learner context loaded
+4. Intent and target skill determined
+5. Retrieval requirement determined
+6. Authorised evidence retrieved when required
+7. MCP capability selected
+8. Input schema validated
+9. Permission and policy checks applied
+10. MCP operation executed
+11. Structured result and provenance returned
+12. Local LLM produces learner-facing output
+13. Activity presented
+14. Attempt / assessment signal recorded where permitted
+15. Learning state updated where permitted
+16. Subsequent practice selected
+```
+
+The complete orchestrator, persistence layer, production RAG deployment, and production transport remain implementation targets unless explicitly present in the repository.
+
+## 4. English-learning capability model
 
 The initial capability decomposition is:
 
-| Capability | Primary responsibility | Example operations |
+| Capability | Responsibility | Representative operations |
 |---|---|---|
-| `english-content` | Approved English-learning resources and source metadata | resource lookup, passage retrieval, source metadata |
-| `grammar` | Grammar explanation and error analysis | analyse error, explain rule, generate constrained practice |
+| `english-content` | Authorised English-learning resources and metadata | resource lookup, passage retrieval, source metadata |
+| `grammar` | Grammar analysis and instruction | error analysis, rule explanation, constrained practice |
 | `vocabulary` | Lexical learning | definitions, context, collocations, word families, recall candidates |
 | `reading` | Reading comprehension | passage support, questions, evidence extraction, readability signals |
-| `writing` | Writing diagnostics and revision support | error diagnosis, clarity feedback, rubric guidance |
-| `assessment` | Learning measurement | quizzes, answer validation, skill tagging, mastery signals |
+| `writing` | Writing diagnosis and revision | error diagnosis, clarity feedback, rubric guidance |
+| `assessment` | Measurement and validation | quiz generation, answer validation, skill tagging, mastery signals |
 | `citation` | Evidence and provenance | source lookup, provenance construction, citation validation |
 
-Additional capabilities can be introduced without redesigning the complete application as long as they respect the shared protocol and schema boundaries.
+Capabilities are intended to remain independently testable and replaceable behind explicit contracts.
 
----
+## 5. Learner-context model
 
-## 7. Learner context model
-
-The current shared schema defines six proficiency levels and six skill areas:
+The shared learner-context model currently defines:
 
 ```text
 Proficiency:
 A1 · A2 · B1 · B2 · C1 · C2
 
-Skill areas:
+Skills:
 grammar · vocabulary · reading · writing · speaking · listening
 ```
 
-The current `learnerContextSchema` contains:
+Current `learnerContextSchema` fields:
 
-```text
-learnerId
-proficiency?
-firstLanguage?
-targetSkill?
-courseId?
-learningGoal?
-```
-
-This context is deliberately structured because downstream services should not need to infer basic learner state from unstructured prompt text.
-
-A production learner profile is expected to evolve toward a richer state representation containing, where appropriate:
-
-```text
-LearnerProfile = {
-    identity / account reference,
-    proficiency,
-    target skills,
-    learning goals,
-    course context,
-    activity history,
-    assessment history,
-    error patterns,
-    vocabulary exposure,
-    mastery estimates,
-    feedback history,
-    preferences,
-    consent / retention policy
+```ts
+learnerContextSchema = {
+  learnerId: string,
+  proficiency?: "A1" | "A2" | "B1" | "B2" | "C1" | "C2",
+  firstLanguage?: string,
+  targetSkill?: "grammar" | "vocabulary" | "reading" |
+                 "writing" | "speaking" | "listening",
+  courseId?: string,
+  learningGoal?: string
 }
 ```
 
-The exact production database schema is not yet fixed and should be treated as an implementation/research decision rather than as an already-deployed feature.
+The model is deliberately explicit so downstream services do not have to infer foundational learner state from free-form prompt text.
 
----
+A future learner profile may incorporate activity history, assessment history, error patterns, vocabulary exposure, mastery estimates, feedback history, preferences, and consent/retention policy. Those extensions are not to be treated as deployed functionality until implemented and evaluated.
 
-## 8. MCP architecture
+## 6. Retrieval-augmented generation
 
-EnglishAI-Ecosystem uses MCP as the capability boundary between the application/orchestrator and specialised English-learning services.
+The conceptual RAG pipeline is:
 
-The project models a capability contract as:
+```text
+Authorised English resources
+        ↓
+Ingestion
+        ↓
+Cleaning / normalisation
+        ↓
+Chunking
+        ↓
+Metadata enrichment
+        ↓
+Embedding / indexing
+        ↓
+Candidate retrieval
+        ↓
+Filtering / reranking
+        ↓
+Evidence package
+        ↓
+Local LLM
+        ↓
+Answer + provenance
+```
+
+Retrieval metadata may include:
+
+```text
+source identifier
+resource title
+resource type
+proficiency level
+skill
+topic
+author/provider
+version
+publication information
+licensing information
+locator
+retrieval timestamp
+approval status
+```
+
+The architecture requires retrieval to respect resource authorization. The complete production vector database, embedding model, reranker, and persistence technology are implementation decisions and should not be presented as fixed unless established in the repository.
+
+## 7. MCP capability architecture
+
+MCP is used as the explicit capability boundary between orchestration and specialised services.
+
+A capability contract is abstracted as:
 
 ```text
 T = (N, D, I, O, V, P, S, E)
@@ -241,67 +201,48 @@ T = (N, D, I, O, V, P, S, E)
 
 where:
 
-- `N` = capability name
-- `D` = description
-- `I` = input schema
-- `O` = output schema
-- `V` = version
-- `P` = permission requirements
-- `S` = safety constraints
-- `E` = evidence/provenance requirements
+- `N` — capability name
+- `D` — description
+- `I` — input schema
+- `O` — output schema
+- `V` — version
+- `P` — permission requirements
+- `S` — safety constraints
+- `E` — evidence/provenance requirements
 
-This abstraction is intended to make tool invocation inspectable and testable.
+The design distinguishes MCP primitives as follows:
 
-### MCP primitives
+**Resources** — read-oriented learning, source, rubric, policy, and governance context.
 
-The design distinguishes the three MCP primitives:
+**Tools** — bounded executable operations such as analysis, lookup, diagnosis, assessment, and validation.
 
-**Resources**
+**Prompts** — reusable pedagogical interaction patterns that structure tutoring workflows.
 
-Read-oriented learning or governance context, such as passages, grammar material, rubrics, approved resources, source metadata, and policy information.
-
-**Tools**
-
-Executable bounded operations such as grammar analysis, vocabulary lookup, reading analysis, writing diagnosis, assessment generation/validation, and citation validation.
-
-**Prompts**
-
-Reusable pedagogical interaction patterns that can constrain or structure tutoring workflows, such as grammar tutoring, vocabulary coaching, reading tutoring, writing coaching, and evidence-grounded responses.
-
-### Tool execution boundary
+Execution boundary:
 
 ```text
 LLM / Orchestrator
-       │
-       ▼
-Tool selection
-       │
-       ▼
+       ↓
+Capability selection
+       ↓
 Schema validation
-       │
-       ▼
+       ↓
 Permission / policy checks
-       │
-       ▼
+       ↓
 MCP server
-       │
-       ▼
+       ↓
 Bounded operation
-       │
-       ▼
+       ↓
 Structured result
-       │
        ├── evidence / provenance
        └── diagnostics / metadata
 ```
 
-The objective is to prevent implicit arbitrary execution by the model.
+The boundary exists to prevent arbitrary or implicit execution by generated model output.
 
----
+## 8. Shared contracts and evidence model
 
-## 9. Shared data contracts
-
-The current implementation uses Zod schemas in `schemas/mcp-contract.ts`.
+The current shared TypeScript contract layer is implemented using Zod in `schemas/mcp-contract.ts`.
 
 ### Learner context
 
@@ -351,135 +292,39 @@ toolEnvelopeSchema = {
 }
 ```
 
-The current contract version is:
+Current contract version: `0.1.0`.
 
-```text
-0.1.0
-```
+Contract changes should be versioned deliberately. Breaking changes must not silently invalidate clients, fixtures, or evaluation artifacts.
 
-Contract evolution should be versioned deliberately. Breaking changes should not silently invalidate existing MCP clients or test fixtures.
+## 9. Assessment, writing support, security, and evaluation
 
----
+### Assessment and learning state
 
-## 10. RAG subsystem
-
-RAG is intended to ground model outputs in an authorised English-learning knowledge base.
-
-The conceptual pipeline is:
-
-```text
-Raw English resources
-        ↓
-Document ingestion
-        ↓
-Cleaning / normalisation
-        ↓
-Chunking
-        ↓
-Metadata enrichment
-        ↓
-Embedding / indexing
-        ↓
-Candidate retrieval
-        ↓
-Filtering / reranking
-        ↓
-Evidence package
-        ↓
-Local LLM
-```
-
-Metadata should be treated as part of retrieval rather than as an optional annotation. Relevant dimensions may include:
-
-- source identifier
-- resource title
-- resource type
-- proficiency level
-- skill
-- language-learning topic
-- author/provider
-- version
-- publication information
-- licensing information
-- locator
-- retrieval timestamp
-- approval status
-
-The current repository contains the architectural separation for `knowledge/`, but the complete production retrieval stack, vector database, embedding model and reranker are not yet declared as fixed implementation choices.
-
----
-
-## 11. Local LLM deployment model
-
-The local inference layer is intentionally abstracted from the learning tools.
-
-Conceptually:
-
-```text
-                   Local inference boundary
-                           │
-             ┌─────────────┼─────────────┐
-             │             │             │
-        Model choice     Runtime      Hardware
-             │             │             │
-             └─────────────┼─────────────┘
-                           │
-                    Access policy
-                           │
-                    Knowledge links
-                           │
-                      MCP access
-```
-
-The system does not require one specific local model in its architecture. The deployment owner may select an appropriate model and runtime according to capability, hardware, latency, licensing, privacy, and operational requirements.
-
-This abstraction is important because the EnglishAI architecture should remain independent of a particular model vendor or model family.
-
----
-
-## 12. Assessment and learning state
-
-Assessment is not intended to be an isolated quiz page. Assessment events can produce structured learning signals:
+The intended signal flow is:
 
 ```text
 Activity
-   ↓
+  ↓
 Attempt
-   ↓
+  ↓
 Response
-   ↓
+  ↓
 Diagnostic analysis
-   ↓
+  ↓
 Skill / error tags
-   ↓
+  ↓
 Feedback
-   ↓
+  ↓
 Mastery signal
-   ↓
+  ↓
 Future practice selection
 ```
 
-Potential learning-state dimensions include:
+The repository does not claim a validated psychometric mastery model unless such a model is explicitly implemented and evaluated.
 
-- skill proficiency
-- recurring grammar errors
-- vocabulary exposure and recall
-- reading comprehension performance
-- writing diagnostics
-- assessment history
-- recent practice
-- confidence or difficulty indicators
-- learning goals
+### Writing support
 
-The current repository should not be interpreted as already implementing a validated psychometric mastery model. A rigorous mastery estimator is a future research/engineering component and requires explicit evaluation.
-
----
-
-## 13. Writing assistance philosophy
-
-Writing support is designed around diagnosis and learner revision rather than silent replacement of the learner's writing.
-
-A target workflow is:
+The intended writing workflow is diagnostic rather than silent replacement:
 
 ```text
 Learner text
@@ -492,96 +337,63 @@ Evidence / explanation
     ↓
 Revision guidance
     ↓
-Learner edits text
+Learner revision
     ↓
 Re-analysis
 ```
 
-This keeps the learner involved in the revision loop and provides measurable opportunities to evaluate whether feedback improves subsequent attempts.
+### Security and governance
 
----
+Production deployment requires explicit controls for authentication, authorization, least privilege, tool allow-listing, resource allow-listing, schema validation, auditability, provenance, credential isolation, learner-data lifecycle management, and operational limits on tool execution.
 
-## 14. Security and governance
+### Evaluation
 
-Production deployment should enforce the following controls.
+Evaluation is intended to measure more than model response quality. The architecture provides for assessment of:
 
-### Authentication
+```text
+contract correctness
+MCP tool reliability
+retrieval recall / ranking
+metadata filtering
+provenance correctness
+unsupported-answer rate
+latency
+learning improvement
+error reduction
+vocabulary retention
+reading performance
+writing revision quality
+assessment calibration
+learner usability
+teacher usability
+```
 
-Requests should be associated with an authenticated user or controlled service identity before protected resources or learner data are accessed.
+## 10. Implementation status, reproducibility, and research program
 
-### Authorization
+### Current status
 
-Access should be evaluated according to role, resource, tool, operation, and deployment policy. The system should use least privilege rather than granting unrestricted MCP access to the model.
+**Prototype / active development.**
 
-### Tool allow-listing
+The current repository establishes the software structure, MCP-oriented architecture, shared contracts, initial capability domains, and testing foundation. It should not be interpreted as a completed production learning platform.
 
-Only explicitly approved tools should be callable in a given deployment context.
+Current development targets include integration of the orchestrator, production RAG, persistent learner state, selected local-model runtimes, authentication/authorization, production MCP transport, observability, security controls, provenance propagation, and educational evaluation.
 
-### Resource allow-listing
-
-RAG should retrieve only resources that are authorised for the requesting user, course, deployment, or policy context.
-
-### Schema validation
-
-Tool inputs and outputs should be validated at the protocol boundary. Zod is currently used for the shared TypeScript contract layer.
-
-### Auditability
-
-Sensitive operations should generate structured audit events containing enough metadata to reconstruct what happened without storing unnecessary sensitive learner content.
-
-### Provenance
-
-Source-backed outputs should retain provenance through the processing pipeline.
-
-### Credential isolation
-
-Secrets must remain outside source control and should be provided through environment-specific secret management.
-
-### Learner data lifecycle
-
-Production deployments must define collection, retention, access, correction, export, and deletion policies appropriate to the deployment context.
-
-### Safety boundaries
-
-Tool operations should enforce input-size, output-size, latency, rate, and permission limits. High-impact operations should not be implicitly triggered by generated text.
-
----
-
-## 15. Repository structure
+### Repository structure
 
 ```text
 EnglishAI-Ecosystem/
-│
 ├── README.md
 ├── LICENSE
 ├── CITATION.cff
 ├── CONTRIBUTING.md
-│
-├── englishai/                  # public multi-page project website
-│   ├── index.html
-│   ├── architecture.html
-│   ├── team.html
-│   ├── contribute.html
-│   ├── join.html
-│   ├── site.css
-│   ├── site.js
-│   ├── logo.svg
-│   ├── banner.svg
-│   ├── banner-dark.svg
-│   └── architecture.svg
-│
-├── web/                        # learner-facing web/interface assets
-│
 ├── apps/
 │   ├── student-web/
 │   └── teacher-dashboard/
-│
 ├── services/
 │   ├── orchestrator/
 │   ├── rag/
 │   ├── llm/
 │   └── authentication/
-│
 ├── mcp-servers/
 │   ├── english-content/
 │   ├── grammar/
@@ -590,100 +402,21 @@ EnglishAI-Ecosystem/
 │   ├── writing/
 │   ├── assessment/
 │   └── citation/
-│
 ├── knowledge/
-│   ├── ingestion/
-│   ├── preprocessing/
-│   ├── metadata/
-│   ├── indexes/
-│   └── datasets/
-│
 ├── learning/
-│   ├── grammar/
-│   ├── vocabulary/
-│   ├── reading/
-│   ├── writing/
-│   ├── speaking/
-│   └── exercises/
-│
 ├── analysis/
-│   ├── writing-analysis/
-│   ├── vocabulary-analysis/
-│   ├── readability/
-│   ├── grammar-analysis/
-│   └── thematic-analysis/
-│
 ├── schemas/
 ├── configs/
-│
 ├── tests/
-│   ├── unit/
-│   ├── integration/
-│   ├── mcp/
-│   ├── rag/
-│   ├── security/
-│   └── evaluation/
-│
 ├── scripts/
-│   ├── ingest/
-│   ├── validate/
-│   ├── benchmark/
-│   └── deploy/
-│
 ├── deployment/
-│   ├── docker/
-│   └── production/
-│
 ├── docs/
-│   ├── architecture/
-│   ├── methodology/
-│   ├── pedagogy/
-│   ├── rag/
-│   ├── mcp/
-│   ├── assessment/
-│   ├── deployment/
-│   └── evaluation/
-│
 └── research/
-    ├── proposal/
-    ├── figures/
-    ├── experiments/
-    └── papers/
 ```
 
-The `englishai/` website is deliberately separate from the technical documentation hierarchy. Website content should communicate the project to learners, educators, researchers and prospective contributors; the README/docs should document implementation and research details.
+### Development environment
 
----
-
-## 16. Current implementation
-
-The current repository is a prototype foundation, not a claim of a completed production platform.
-
-Implemented foundation includes:
-
-- TypeScript-based project structure.
-- Node.js 20+ target.
-- MCP TypeScript server architecture.
-- Seven initial MCP server domains.
-- Shared Zod schemas for learner context, evidence, provenance, and tool envelopes.
-- Contract versioning.
-- MCP-focused tests.
-- Multi-page public project website.
-- Interactive architecture presentation.
-- Team and contribution pages.
-- GitHub-based direct contribution pathway.
-- Coordinated team application pathway.
-- GitHub Pages deployment workflow.
-
-The current MCP services use development-oriented datasets and should not be represented as a production-scale English knowledge base.
-
-The complete production stack still requires integration and validation of the orchestrator, persistent learner data, production RAG, selected local-model runtimes, authentication/authorization, production MCP transports, observability, evaluation and deployment infrastructure.
-
----
-
-## 17. Development environment
-
-Current package configuration targets:
+Current package targets:
 
 ```text
 Node.js >= 20
@@ -695,33 +428,16 @@ Vitest
 tsx
 ```
 
-Install dependencies:
-
 ```bash
 git clone https://github.com/BurhanAbdullah/EnglishAI-Ecosystem.git
 cd EnglishAI-Ecosystem
 npm install
-```
-
-Type-check the project:
-
-```bash
 npm run typecheck
-```
-
-Run the complete test suite:
-
-```bash
 npm test
-```
-
-Run MCP tests:
-
-```bash
 npm run test:mcp
 ```
 
-Development entry points currently include:
+Current development entry points include:
 
 ```bash
 npm run dev:content
@@ -733,314 +449,42 @@ npm run dev:assessment
 npm run dev:citation
 ```
 
-These commands are development entry points for the current server implementations; they should not be interpreted as the final production deployment topology.
+### Reproducibility and research direction
 
----
-
-## 18. Testing strategy
-
-The intended test hierarchy is:
+The intended verification hierarchy is:
 
 ```text
 Unit tests
-    ↓
+   ↓
 Schema / contract tests
-    ↓
-MCP server tests
-    ↓
+   ↓
+MCP tests
+   ↓
 Integration tests
-    ↓
-RAG retrieval tests
-    ↓
+   ↓
+RAG evaluation
+   ↓
 Security / authorization tests
-    ↓
+   ↓
 End-to-end learning workflows
-    ↓
+   ↓
 Educational evaluation
 ```
 
-### MCP tests
+Research questions include the effect of evidence grounding, specialised MCP capabilities, learner-context conditioning, iterative feedback, local deployment, provenance propagation, retrieval strategy, assessment signals, and teacher governance on system reliability and learning outcomes.
 
-Each MCP server should be tested for:
+The repository separates implemented functionality from research hypotheses and planned production components. Claims should be supported by code, tests, experimental protocols, or published evaluation rather than by architectural intent alone.
 
-- tool discovery
-- valid input acceptance
-- invalid input rejection
-- deterministic schema behaviour
-- structured output validity
-- provenance behaviour where applicable
-- permission failures
-- edge cases
+## Leadership and contribution
 
-### RAG tests
+**Burhan Abdullah** — Project Lead / Lead Contributor  
+https://github.com/BurhanAbdullah
 
-Future retrieval evaluation should separately measure:
+**Dr. Mudasir Rahman** — Project Lead / Lead Contributor  
+https://github.com/Drmudasirrahman
 
-- recall of relevant evidence
-- ranking quality
-- metadata filtering correctness
-- citation/provenance correctness
-- unsupported-answer rate
-- retrieval latency
+The repository is open to direct contributions through GitHub. Contributions may address software engineering, MCP services, schemas, RAG, English-language resources, pedagogy, assessment, evaluation, documentation, reproducibility, or related research infrastructure.
 
-### Learning evaluation
+## License
 
-Educational evaluation should not be reduced to LLM response quality. It should examine learning outcomes such as:
-
-- improvement between attempts
-- error reduction
-- vocabulary retention
-- reading comprehension
-- writing revision quality
-- calibration of assessment signals
-- learner usability
-- teacher usability
-
----
-
-## 19. Research and evaluation direction
-
-The architecture supports research questions around:
-
-1. Whether evidence-grounded tutoring reduces unsupported explanations.
-2. Whether specialised MCP capabilities improve task reliability relative to monolithic prompting.
-3. Whether learner-context conditioning improves the relevance of explanations and practice.
-4. Whether iterative feedback improves subsequent learner attempts.
-5. How local deployment affects controllability, latency, privacy and operational complexity.
-6. How provenance can be propagated through retrieval, tool execution and generated responses.
-7. How different retrieval strategies affect English-learning outcomes.
-8. How assessment signals can be transformed into defensible mastery estimates.
-9. How teacher governance affects the safety and usefulness of AI-assisted learning.
-
-These are research directions, not claims of validated results.
-
----
-
-## 20. Contribution model
-
-EnglishAI-Ecosystem supports two distinct participation modes.
-
-### A. Direct repository contribution
-
-Anyone can contribute directly through GitHub without joining the coordinated project group.
-
-Typical contributions include:
-
-- bug fixes
-- features
-- MCP servers
-- schema improvements
-- tests
-- RAG components
-- English-learning resources
-- pedagogical content
-- documentation
-- UI/UX improvements
-- research utilities
-- evaluation datasets
-- reproducibility tooling
-
-The normal open-source workflow is:
-
-```text
-Fork
-  ↓
-Create branch
-  ↓
-Implement change
-  ↓
-Run tests / checks
-  ↓
-Commit
-  ↓
-Push
-  ↓
-Open Pull Request
-  ↓
-Review
-  ↓
-Merge
-```
-
-### B. Coordinated collaboration group
-
-Group membership is intentionally different from an ordinary pull request.
-
-Applicants can provide:
-
-- name
-- email
-- preferred role
-- contribution stream
-- skills/background
-- proposed contribution
-- suggestions for EnglishAI
-
-A project lead reviews the application. If approved, the project team can contact the applicant by email with the next collaboration steps.
-
-This workflow is intended for sustained collaboration, shared workstreams and project coordination.
-
----
-
-## 21. Contribution streams
-
-The current contribution model is intentionally broad.
-
-### Engineering
-
-Application services, TypeScript, APIs, testing, deployment, databases and infrastructure.
-
-### English language and pedagogy
-
-Grammar, vocabulary, reading, writing, assessment design, proficiency modelling and instructional methodology.
-
-### AI / RAG / MCP
-
-Local model integration, retrieval, embeddings, reranking, MCP tools, prompts, schemas and evaluation.
-
-### Research and evaluation
-
-Experimental design, datasets, benchmarks, educational evaluation, reliability studies and reproducibility.
-
-### Documentation and UX
-
-Technical documentation, learner experience, teacher experience, accessibility and information architecture.
-
-### Ideas and partnerships
-
-New learning workflows, datasets, educational use cases, research directions and collaboration opportunities.
-
----
-
-## 22. Website versus repository documentation
-
-The distinction is deliberate:
-
-| Layer | Purpose | Audience |
-|---|---|---|
-| `englishai/` | Public project website | Learners, educators, researchers, contributors, visitors |
-| `README.md` | Technical system overview | Developers, researchers, reviewers |
-| `docs/` | Detailed engineering/design documentation | Developers and researchers |
-| `mcp-servers/` | Executable MCP capability implementations | Developers |
-| `schemas/` | Shared machine-readable contracts | Developers / services |
-| `tests/` | Verification | Developers / CI |
-| `research/` | Research artifacts | Researchers |
-
-The website is therefore not intended to replace this README, and the README is not intended to duplicate the website's marketing/presentation content.
-
----
-
-## 23. Roadmap
-
-### Phase 1 — Foundation
-
-- MCP server separation
-- Shared contracts
-- Initial learning capabilities
-- Website and project documentation
-- Baseline tests
-
-### Phase 2 — Core AI integration
-
-- Orchestrator service
-- Local LLM adapter interface
-- RAG ingestion and retrieval pipeline
-- Persistent learner profile
-- Production-ready MCP transport
-
-### Phase 3 — Learning intelligence
-
-- Adaptive practice selection
-- Assessment and mastery models
-- Improved writing diagnostics
-- Vocabulary retention workflows
-- Reading progression
-- Teacher dashboard integration
-
-### Phase 4 — Evaluation
-
-- Retrieval benchmarks
-- Tool reliability benchmarks
-- Educational outcome studies
-- Safety/security evaluation
-- Human evaluation
-- Reproducibility packages
-
-### Phase 5 — Deployment
-
-- Containerised services
-- Authentication and authorization
-- Observability
-- Secrets management
-- Data lifecycle controls
-- Deployment profiles for different operators
-
-The roadmap is subject to engineering and research validation; future components should not be represented as currently implemented until they exist in the repository and pass their relevant checks.
-
----
-
-## 24. Technical documentation
-
-Detailed documentation is organised under:
-
-```text
-docs/
-├── architecture/
-├── methodology/
-├── pedagogy/
-├── rag/
-├── mcp/
-├── assessment/
-├── deployment/
-└── evaluation/
-```
-
-The current MCP architecture specification is available at:
-
-```text
-docs/mcp/MCP-ARCHITECTURE.md
-```
-
-The shared contract implementation is:
-
-```text
-schemas/mcp-contract.ts
-```
-
----
-
-## 25. Status and scope statement
-
-**Current status: prototype / active development.**
-
-EnglishAI-Ecosystem currently establishes the architectural and MCP foundation and a public multi-page project website. It is not yet a fully deployed production learning platform.
-
-In particular, production claims should wait for implementation and evaluation of:
-
-- end-to-end orchestrator integration
-- production RAG
-- persistent learner profiles
-- selected local LLM runtime(s)
-- authentication and authorization
-- production MCP transport/deployment
-- security controls
-- provenance propagation
-- educational evaluation
-- operational monitoring
-
-This distinction is important for reproducibility and for preventing the documentation from claiming capabilities that are only planned.
-
----
-
-## 26. License
-
-This project is released under the MIT License. See [`LICENSE`](./LICENSE).
-
----
-
-## 27. Project links
-
-**Website:** https://burhanabdullah.github.io/EnglishAI-Ecosystem/  
-**Repository:** https://github.com/BurhanAbdullah/EnglishAI-Ecosystem  
-**Burhan Abdullah:** https://github.com/BurhanAbdullah  
-**Dr. Mudasir Rahman:** https://github.com/Drmudasirrahman
+MIT License. See [`LICENSE`](./LICENSE).
