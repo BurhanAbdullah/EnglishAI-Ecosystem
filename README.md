@@ -1,14 +1,7 @@
 # EnglishAI-Ecosystem
 
-<p align="center">
-  <img src="englishai/banner.svg" alt="EnglishAI Ecosystem" width="100%">
-</p>
+<img width="2560" height="640" alt="banner" src="https://github.com/user-attachments/assets/0c5a1b56-b01e-462a-8a19-a03779f45217" />
 
-<p align="center">
-  <a href="https://burhanabdullah.github.io/EnglishAI-Ecosystem/">Project Website</a> ·
-  <a href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">Repository</a> ·
-  <a href="./CONTRIBUTING.md">Contributing</a>
-</p>
 
 > A local-first, RAG- and MCP-enabled software ecosystem for teaching English as a second or additional language.
 
@@ -118,8 +111,7 @@ The project structure separates application code, schemas, knowledge processing,
 ---
 
 ## 4. High-level architecture
-<img width="2400" height="2320" alt="AdobeExpressPhotos_b2bd81cd51194540af779fc8be93a1ee_CopyEdited" src="https://github.com/user-attachments/assets/261cd264-010c-4552-9bd8-1e660fcfe2c0" />
-
+<img width="1640" height="1960" alt="architecture" src="https://github.com/user-attachments/assets/1c307966-23ad-4df7-81fc-d19ec3a15cb6" />
 
 The architecture separates four concerns that are frequently collapsed in chatbot systems:
 
