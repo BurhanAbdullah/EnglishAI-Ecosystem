@@ -1,0 +1,57 @@
+name: Team approval email
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: read
+
+jobs:
+  notify-approved-applicant:
+    if: github.event.label.name == 'team-approved' && (github.actor == 'BurhanAbdullah' || github.actor == 'Drmudasirrahman')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send approval email through Resend
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          LEAD_NAME: ${{ github.actor == 'BurhanAbdullah' && 'Burhan Abdullah' || 'Dr. Mudasir Rahman' }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${RESEND_API_KEY}" || -z "${EMAIL_FROM}" ]]; then
+            echo "Missing RESEND_API_KEY or EMAIL_FROM repository secret. Configure them before using team approval emails."
+            exit 1
+          fi
+          EMAIL=$(printf '%s\n' "$ISSUE_BODY" | sed -n 's/^Email: *//p' | head -n1 | tr -d '\r')
+          if [[ -z "$EMAIL" ]]; then
+            echo "No applicant email found in the application issue."
+            exit 1
+          fi
+          python - <<'PY' > /tmp/payload.json
+          import json, os
+          body = {
+            "from": os.environ["EMAIL_FROM"],
+            "to": [os.environ["EMAIL"]] if "EMAIL" in os.environ else [],
+            "subject": "EnglishAI-Ecosystem team application approved",
+            "text": f"Hello,\n\nYour EnglishAI-Ecosystem group application has been approved by {os.environ['LEAD_NAME']}. Thank you for your interest in contributing to the project.\n\nYour application: {os.environ['ISSUE_TITLE']}\n\nThe project lead will follow up with the next collaboration steps.\n\nEnglishAI-Ecosystem\nBurhan Abdullah & Dr. Mudasir Rahman"
+          }
+          print(json.dumps(body))
+          PY
+          export EMAIL
+          python - <<'PY' > /tmp/payload.json
+          import json, os
+          print(json.dumps({
+            "from": os.environ["EMAIL_FROM"],
+            "to": [os.environ["EMAIL"]],
+            "subject": "EnglishAI-Ecosystem team application approved",
+            "text": f"Hello,\n\nYour EnglishAI-Ecosystem group application has been approved by {os.environ['LEAD_NAME']}. Thank you for your interest in contributing to the project.\n\nYour application: {os.environ['ISSUE_TITLE']}\n\nThe project lead will follow up with the next collaboration steps.\n\nEnglishAI-Ecosystem\nBurhan Abdullah & Dr. Mudasir Rahman"
+          }))
+          PY
+          curl -fsS https://api.resend.com/emails \
+            -H "Authorization: Bearer ${RESEND_API_KEY}" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/payload.json
