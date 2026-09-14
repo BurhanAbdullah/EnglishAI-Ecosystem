@@ -118,54 +118,8 @@ The project structure separates application code, schemas, knowledge processing,
 ---
 
 ## 4. High-level architecture
+<img width="2400" height="2320" alt="AdobeExpressPhotos_b2bd81cd51194540af779fc8be93a1ee_CopyEdited" src="https://github.com/user-attachments/assets/261cd264-010c-4552-9bd8-1e660fcfe2c0" />
 
-```text
-                         ENGLISHAI-ECOSYSTEM
-
- ┌──────────────────────────────────────────────────────────────┐
- │                    Student / Teacher UI                      │
- │              Web application / PWA interface                 │
- └────────────────────────────┬─────────────────────────────────┘
-                              │
-                              ▼
- ┌──────────────────────────────────────────────────────────────┐
- │                    Application Orchestrator                   │
- │     intent routing · learner context · workflow control      │
- └───────────────┬───────────────────────────┬──────────────────┘
-                 │                           │
-                 ▼                           ▼
- ┌────────────────────────────┐   ┌─────────────────────────────┐
- │      Knowledge + RAG       │   │       Learner Profile       │
- │ resources · metadata       │   │ proficiency · goals ·       │
- │ retrieval · evidence       │   │ mastery · learning events   │
- └──────────────┬─────────────┘   └─────────────────────────────┘
-                │
-                ▼
- ┌──────────────────────────────────────────────────────────────┐
- │                  Configurable Local LLM                       │
- │              model inference / explanation                    │
- └────────────────────────────┬─────────────────────────────────┘
-                              │
-                              ▼
- ┌──────────────────────────────────────────────────────────────┐
- │                    MCP Integration Layer                      │
- │       typed · validated · permission-aware · auditable        │
- └───────┬────────┬────────┬────────┬────────┬────────┬─────────┘
-         │        │        │        │        │        │
-         ▼        ▼        ▼        ▼        ▼        ▼
-      Content  Grammar  Vocabulary Reading  Writing Assessment Citation
-         │        │        │        │        │        │        │
-         └────────┴────────┴────────┴────────┴────────┴────────┘
-                              │
-                              ▼
-                 Structured learning result
-                              │
-                              ▼
-                    Feedback / assessment
-                              │
-                              ▼
-                    Learner progress update
-```
 
 The architecture separates four concerns that are frequently collapsed in chatbot systems:
 
