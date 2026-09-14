@@ -1,0 +1,30 @@
+{
+  "name": "englishai-ecosystem",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local AI ecosystem for English as a second/additional language learning with MCP services.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:mcp": "vitest run tests/mcp",
+    "dev:content": "tsx mcp-servers/english-content/src/index.ts",
+    "dev:grammar": "tsx mcp-servers/grammar/src/index.ts",
+    "dev:vocabulary": "tsx mcp-servers/vocabulary/src/index.ts",
+    "dev:reading": "tsx mcp-servers/reading/src/index.ts",
+    "dev:writing": "tsx mcp-servers/writing/src/index.ts",
+    "dev:assessment": "tsx mcp-servers/assessment/src/index.ts",
+    "dev:citation": "tsx mcp-servers/citation/src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "latest",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.4.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
