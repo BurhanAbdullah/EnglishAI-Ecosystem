@@ -4,11 +4,17 @@ A local, RAG- and MCP-enabled AI ecosystem for teaching English as a second/addi
 
 EnglishAI-Ecosystem is designed as a learning platform rather than a chatbot-only application. It combines an English-learning knowledge base, local language-model inference, retrieval-augmented generation (RAG), Model Context Protocol (MCP) services, learning tools, assessment, provenance, teacher controls, and a learner-centered feedback loop.
 
+## Live website
+
+**EnglishAI Ecosystem:** https://burhanabdullah.github.io/englishai/index.html
+
+The public landing page uses the EnglishAI Ecosystem logo and the system architecture visual, and provides a direct link to this repository.
+
 ## Web experience
 
-The repository now includes a complete responsive single-page learner interface in `web/`.
+The repository includes a responsive learner interface in `web/` and the public-site assets in `englishai/`.
 
-Open `web/index.html` directly for the front-end prototype. It includes:
+The learner interface includes:
 
 - EnglishAI Tutor conversation interface
 - Grammar, vocabulary, reading, writing, and assessment entry points
@@ -19,7 +25,6 @@ Open `web/index.html` directly for the front-end prototype. It includes:
 - responsive mobile/desktop layout
 - light/dark appearance toggle
 - local browser persistence for practice and visitor counts
-- privacy-friendly local user counter at the bottom of the page
 
 The browser UI is deliberately backend-neutral: the interaction shell can be connected to the orchestrator and MCP client layer without redesigning the learner experience.
 
@@ -45,14 +50,16 @@ English Learning Resources
           |
           v
    MCP Integration Layer
-     /    |      |    \
+     /    |      |    \\
     v     v      v     v
 Grammar Vocabulary Writing Assessment ...
-     \    |      |    /
-      \   |      |   /
+     \\    |      |    /
+      \\   |      |   /
        v  v      v  v
        Student / Teacher UI
 ```
+
+The architecture graphic is maintained as `englishai/architecture.svg`; the project identity graphic is maintained as `englishai/logo.svg`.
 
 ## MCP server model
 
@@ -83,6 +90,10 @@ EnglishAI-Ecosystem/
 │   ├── mcp/
 │   ├── assessment/
 │   └── evaluation/
+├── englishai/
+│   ├── index.html
+│   ├── logo.svg
+│   └── architecture.svg
 ├── web/
 │   ├── index.html
 │   ├── styles.css
