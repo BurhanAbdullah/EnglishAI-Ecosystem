@@ -1,159 +1,159 @@
-# EnglishAI-Ecosystem
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="englishai/banner-dark.svg">
+  <img alt="EnglishAI Ecosystem" src="englishai/banner.svg">
+</picture>
 
-A local, RAG- and MCP-enabled AI ecosystem for teaching English as a second/additional language.
+<p align="center">
+  <a href="https://burhanabdullah.github.io/EnglishAI-Ecosystem/"><img alt="Live site" src="https://img.shields.io/badge/live%20site-github%20pages-1B2A4A"></a>
+  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-1B2A4A"></a>
+  <img alt="Status" src="https://img.shields.io/badge/status-prototype-C43D3D">
+  <img alt="MCP" src="https://img.shields.io/badge/MCP-enabled-1B2A4A">
+</p>
 
-EnglishAI-Ecosystem is designed as a learning platform rather than a chatbot-only application. It combines an English-learning knowledge base, local language-model inference, retrieval-augmented generation (RAG), Model Context Protocol (MCP) services, learning tools, assessment, provenance, teacher controls, and a learner-centered feedback loop.
+<p align="center"><i>A local, RAG- and MCP-enabled AI ecosystem for teaching English as a second/additional language.</i></p>
 
-## Live website
+---
 
-**EnglishAI Ecosystem:** https://burhanabdullah.github.io/EnglishAI-Ecosystem/
+EnglishAI Ecosystem is a learning platform, not a chatbot wrapper. It combines an English-learning knowledge base, retrieval-augmented generation, configurable local language-model inference, Model Context Protocol (MCP) services, assessment, source provenance, and teacher controls into one learner-centred feedback loop.
 
-The project website is deployed from the `englishai/` and `web/` frontend assets through GitHub Pages Actions. The landing page uses the EnglishAI Ecosystem logo, project banner, interactive learner interface, and system architecture visual.
+**Live site:** https://burhanabdullah.github.io/EnglishAI-Ecosystem/
 
-## Web experience
+## Project leadership
 
-The repository includes a responsive learner interface in `web/` and the public-site assets in `englishai/`.
+**Burhan Abdullah** — Project Lead · Lead Contributor  
+https://github.com/BurhanAbdullah
 
-The learner interface includes:
+**Dr. Mudasir Rahman** — Project Lead · Lead Contributor  
+https://github.com/Drmudasirrahman
 
-- EnglishAI Tutor conversation interface
-- Grammar, vocabulary, reading, writing, and assessment entry points
-- learner proficiency selector
-- guided learning prompts
-- progress and skill map
-- MCP architecture overview
-- responsive mobile/desktop layout
-- light/dark appearance toggle
-- local browser persistence for practice and visitor counts
+The project is open to direct GitHub contributions and to applicants who want to join the coordinated collaboration group.
 
-The browser UI is deliberately backend-neutral: the interaction shell can be connected to the orchestrator and MCP client layer without redesigning the learner experience.
+## Why it's built this way
 
-## Core learning loop
+- **Learner-first.** Explanations and exercises adapt to proficiency, task, and learning context.
+- **Evidence-grounded.** Retrieved content carries source and provenance metadata, so answers can be checked.
+- **Local-first.** A local LLM is a deployment choice, not an institution-only requirement. An individual, research team, school, university, organisation, or other deployment owner can operate a configurable local model environment.
+- **Tool-safe.** Every tool the model can call is explicit, typed, validated, permissioned, and auditable.
+- **Teacher-governed.** Where teacher controls are used, educators can manage approved resources, rubrics, assessment settings, and publication.
+- **Researchable.** Evaluation, ablations, audit logs, and reproducible datasets are first-class, not an afterthought.
 
-`Ask -> Explain -> Practise -> Feedback -> Revise -> Improve`
+## The learning loop
 
-The AI should help learners understand why an answer is correct, practise the skill, identify weaknesses, and retry. It should not simply replace student work.
+```text
+Ask → Explain → Practise → Attempt → Feedback → Retry → Improve
+```
+
+The model's job is to help a learner understand why an answer is correct, practise the skill, see their own errors explained, and try again — not to produce the answer for them.
+
+## Website
+
+The project website is intentionally multi-page:
+
+- **Home** — project overview and learning ecosystem.
+- **Architecture** — interactive system architecture and deployment model.
+- **Team** — project leads and contribution streams.
+- **Contribute** — direct GitHub contribution versus coordinated group participation.
+- **Join the Group** — application form collecting identity, email, role, stream, proposed contribution and suggestions.
+
+## Joining the group
+
+Group participation is separate from direct GitHub contribution. Applicants submit a team application through the website. The application is opened as a GitHub issue for review by the project leads. Approved applicants can receive a confirmation email from the project team.
+
+The repository contains a GitHub Actions workflow for approval-email delivery. Email delivery requires the project maintainers to configure the appropriate repository secrets for the selected email provider.
+
+## Direct contributions
+
+You do not need to join the group to contribute. Fork the repository, open an issue, improve documentation, add tests, improve the English-learning modules, build MCP services, work on RAG/local-model integration, or submit a pull request.
+
+See `CONTRIBUTING.md` for the contribution model.
+
+## What's inside
+
+| Module | Does |
+|---|---|
+| **Grammar Coach** | Rule explanations, examples, error analysis, level-aware practice |
+| **Vocabulary Builder** | Words in context, definitions, word families, spaced recall |
+| **Reading Lab** | Passages, comprehension questions, vocabulary support, evidence extraction |
+| **Writing Studio** | Feedback on grammar, clarity, and organisation — without rewriting the learner's voice |
+| **Assessment** | Diagnostic and formative activities linked to level and skill mastery |
+| **MCP Learning Tools** | Controlled access to specialist English resources through explicit, typed interfaces |
 
 ## Architecture
 
 ```text
-English Learning Resources
-          |
-          v
-  Knowledge Base + Metadata
-          |
-          v
-     RAG / Retrieval
-          |
-          v
-       Local LLM
-          |
-          v
-   MCP Integration Layer
-     /    |      |    \\
-    v     v      v     v
-Grammar Vocabulary Writing Assessment ...
-     \\    |      |    /
-      \\   |      |   /
-       v  v      v  v
-       Student / Teacher UI
+English learning resources
+            │
+            ▼
+   Knowledge base + metadata
+            │
+            ▼
+        RAG / retrieval
+            │
+            ▼
+   Configurable Local LLM
+            │
+            ▼
+    MCP integration layer
+   ╱     │      │      ╲
+Grammar Vocabulary Reading Writing Assessment Citation
+   ╲     │      │      ╱
+       Learning experience
+            │
+            ▼
+     Feedback + assessment
+            │
+            ▼
+       Learner progress
 ```
 
-The architecture graphic is maintained as `englishai/architecture.svg`; the project identity graphic is maintained as `englishai/logo.svg`.
+The local model is intentionally described as configurable deployment. The operator controls the model/runtime environment and decides what resources and tools it can access. The same architecture can therefore be adapted to personal, research, educational, organisational or other controlled environments.
 
-## MCP server model
+## MCP servers
 
-The first-class MCP servers are:
+| Server | Responsibility |
+|---|---|
+| `english-content` | Authorized resources, passages, examples, and source metadata |
+| `grammar` | Explanations, error analysis, constrained practice generation |
+| `vocabulary` | Definitions, collocations, word families, spaced-practice candidates |
+| `reading` | Comprehension support, question generation, readability signals |
+| `writing` | Diagnostics, revision guidance, rubric-aligned feedback |
+| `assessment` | Quizzes, answer validation, skill tagging, mastery signals |
+| `citation` | Provenance records, source lookup, citation validation |
 
-- `english-content`: authorized English-learning resources, passages, examples, course materials, and source metadata.
-- `grammar`: explanations, error analysis, constrained practice generation, and grammar-level feedback.
-- `vocabulary`: definitions, collocations, word families, examples, spaced practice candidates, and level-aware support.
-- `reading`: reading comprehension support, question generation, evidence extraction, and readability signals.
-- `writing`: writing diagnostics, revision guidance, rubric-aligned feedback, and error categorization without silently rewriting the learner's work.
-- `assessment`: quizzes, answer validation, skill tagging, attempts, mastery signals, and teacher-controlled assessment policies.
-- `citation`: provenance records, source lookup, citation validation, and evidence bundles for retrieved material.
-
-Servers expose MCP resources, tools, and prompts. All tool contracts are versioned and validated.
+Every server exposes MCP resources, tools, and prompts. All tool contracts are versioned and validated — nothing is called implicitly.
 
 ## Repository layout
 
 ```text
 EnglishAI-Ecosystem/
-├── README.md
-├── LICENSE
-├── CITATION.cff
+├── README.md · LICENSE · CITATION.cff · CONTRIBUTING.md
 ├── docs/
-│   ├── architecture/
-│   ├── methodology/
-│   ├── pedagogy/
-│   ├── rag/
-│   ├── mcp/
-│   ├── assessment/
-│   └── evaluation/
-├── englishai/
-│   ├── index.html
-│   ├── banner.svg
-│   ├── logo.svg
-│   └── architecture.svg
-├── web/
-│   ├── index.html
-│   ├── styles.css
-│   └── app.js
-├── apps/
-│   ├── student-web/
-│   └── teacher-dashboard/
-├── services/
-│   ├── orchestrator/
-│   ├── rag/
-│   ├── llm/
-│   └── auth/
-├── mcp-servers/
-│   ├── english-content/
-│   ├── grammar/
-│   ├── vocabulary/
-│   ├── reading/
-│   ├── writing/
-│   ├── assessment/
-│   └── citation/
-├── knowledge/
-│   ├── ingestion/
-│   ├── preprocessing/
-│   ├── metadata/
-│   ├── indexes/
-│   └── datasets/
-├── learning/
-├── analysis/
-├── schemas/
-├── configs/
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   ├── mcp/
-│   ├── rag/
-│   ├── security/
-│   └── evaluation/
-├── scripts/
-├── deployment/
-└── research/
+├── englishai/        public multi-page website and assets
+├── web/              learner interface
+├── apps/             student-web/, teacher-dashboard/
+├── services/         orchestrator/, rag/, llm/, auth/
+├── mcp-servers/      English learning MCP services
+├── knowledge/        ingestion/, preprocessing/, metadata/, indexes/
+├── learning/ · analysis/ · schemas/ · configs/
+├── tests/             unit/, integration/, mcp/, rag/, security/, evaluation/
+├── scripts/ · deployment/ · research/
+└── .github/workflows/ Pages deployment and team-approval email workflow
 ```
-
-## Design principles
-
-1. Learner-first: explanations and exercises are adapted to proficiency, task, and learning context.
-2. Evidence-grounded: retrieved content is associated with source and provenance metadata.
-3. Local-first: institutional materials and learner data can remain inside institutional infrastructure.
-4. Tool-safe: tool access is explicit, typed, validated, permissioned, and auditable.
-5. Teacher-governed: faculty control approved resources, courses, rubrics, assessment settings, and publication policies.
-6. Researchable: evaluation, ablation, audit logs, and reproducible datasets are first-class components.
-
-## User counter note
-
-The current bottom-of-page counter is intentionally local and privacy-friendly: it counts distinct browsers that have visited the page using `localStorage`. It is **not** a global concurrent-user or total-user count. A real global counter should be added through the backend once deployment infrastructure is connected.
 
 ## Development status
 
-The MCP layer and full front-end prototype are established. The next integration stage is to connect the web interface to the orchestrator, RAG service, local LLM, persistent learner profiles, and production MCP transports. These backends should be connected only after their authentication, authorization, provenance, validation, and evaluation contracts are in place.
+The MCP layer and front-end prototype are established. The next stage is connecting the web interface to the orchestrator, RAG service, local LLM, and persistent learner profiles over production MCP transports — each gated on authentication, authorization, provenance, safety and evaluation contracts.
 
-## Author
+## Getting started
 
-Burhan Abdullah
+```bash
+git clone https://github.com/BurhanAbdullah/EnglishAI-Ecosystem.git
+cd EnglishAI-Ecosystem
+npm install
+```
+
+See `docs/architecture/` for system design and `docs/mcp/` for server contracts.
+
+## License
+
+MIT
