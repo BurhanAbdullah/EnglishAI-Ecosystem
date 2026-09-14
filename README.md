@@ -1,4 +1,5 @@
 # EnglishAI-Ecosystem
+<img width="2560" height="640" alt="banner" src="https://github.com/user-attachments/assets/3e08cc16-c345-44f1-acdd-82930b73bd30" />
 
 > A local-first, retrieval-augmented, MCP-enabled software architecture for AI-assisted English language learning and teaching.
 
