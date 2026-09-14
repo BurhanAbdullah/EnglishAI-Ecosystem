@@ -1,15 +1,15 @@
 name: Team approval email
 
 on:
-  issues:
-    types: [labeled]
+  issue_comment:
+    types: [created]
 
 permissions:
   issues: read
 
 jobs:
   notify-approved-applicant:
-    if: github.event.label.name == 'team-approved' && (github.actor == 'BurhanAbdullah' || github.actor == 'Drmudasirrahman')
+    if: github.event.issue.pull_request == null && (github.actor == 'BurhanAbdullah' || github.actor == 'Drmudasirrahman') && contains(github.event.comment.body, '/approve')
     runs-on: ubuntu-latest
     steps:
       - name: Send approval email through Resend
