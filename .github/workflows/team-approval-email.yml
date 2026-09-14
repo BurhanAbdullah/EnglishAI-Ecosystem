@@ -15,15 +15,21 @@ jobs:
       - name: Send approval email through Resend
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          FROM_BURHAN: ${{ secrets.FROM_BURHAN }}
+          FROM_MUDASIR: ${{ secrets.FROM_MUDASIR }}
           LEAD_NAME: ${{ github.actor == 'BurhanAbdullah' && 'Burhan Abdullah' || 'Dr. Mudasir Rahman' }}
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -z "${RESEND_API_KEY}" || -z "${EMAIL_FROM}" ]]; then
-            echo "Missing RESEND_API_KEY or EMAIL_FROM repository secret. Configure them before using team approval emails."
+          if [[ -z "${RESEND_API_KEY}" ]]; then
+            echo "Missing RESEND_API_KEY repository secret."
+            exit 1
+          fi
+          if [[ "${GITHUB_ACTOR}" == "BurhanAbdullah" ]]; then FROM_EMAIL="${FROM_BURHAN}"; else FROM_EMAIL="${FROM_MUDASIR}"; fi
+          if [[ -z "${FROM_EMAIL}" ]]; then
+            echo "Missing FROM_BURHAN or FROM_MUDASIR repository secret."
             exit 1
           fi
           EMAIL=$(printf '%s\n' "$ISSUE_BODY" | sed -n 's/^Email: *//p' | head -n1 | tr -d '\r')
@@ -31,11 +37,11 @@ jobs:
             echo "No applicant email found in the application issue."
             exit 1
           fi
-          export EMAIL
+          export EMAIL FROM_EMAIL
           python - <<'PY' > /tmp/payload.json
           import json, os
           print(json.dumps({
-            "from": os.environ["EMAIL_FROM"],
+            "from": os.environ["FROM_EMAIL"],
             "to": [os.environ["EMAIL"]],
             "subject": "EnglishAI-Ecosystem team application approved",
             "text": f"Hello,\n\nYour EnglishAI-Ecosystem group application has been approved by {os.environ['LEAD_NAME']}. Thank you for your interest in contributing to the project.\n\nYour application: {os.environ['ISSUE_TITLE']}\n\nThe project lead will follow up with the next collaboration steps.\n\nEnglishAI-Ecosystem\nBurhan Abdullah & Dr. Mudasir Rahman"
