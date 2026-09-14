@@ -4,6 +4,25 @@ A local, RAG- and MCP-enabled AI ecosystem for teaching English as a second/addi
 
 EnglishAI-Ecosystem is designed as a learning platform rather than a chatbot-only application. It combines an English-learning knowledge base, local language-model inference, retrieval-augmented generation (RAG), Model Context Protocol (MCP) services, learning tools, assessment, provenance, teacher controls, and a learner-centered feedback loop.
 
+## Web experience
+
+The repository now includes a complete responsive single-page learner interface in `web/`.
+
+Open `web/index.html` directly for the front-end prototype. It includes:
+
+- EnglishAI Tutor conversation interface
+- Grammar, vocabulary, reading, writing, and assessment entry points
+- learner proficiency selector
+- guided learning prompts
+- progress and skill map
+- MCP architecture overview
+- responsive mobile/desktop layout
+- light/dark appearance toggle
+- local browser persistence for practice and visitor counts
+- privacy-friendly local user counter at the bottom of the page
+
+The browser UI is deliberately backend-neutral: the interaction shell can be connected to the orchestrator and MCP client layer without redesigning the learner experience.
+
 ## Core learning loop
 
 `Ask -> Explain -> Practise -> Feedback -> Revise -> Improve`
@@ -64,6 +83,10 @@ EnglishAI-Ecosystem/
 │   ├── mcp/
 │   ├── assessment/
 │   └── evaluation/
+├── web/
+│   ├── index.html
+│   ├── styles.css
+│   └── app.js
 ├── apps/
 │   ├── student-web/
 │   └── teacher-dashboard/
@@ -111,9 +134,13 @@ EnglishAI-Ecosystem/
 5. Teacher-governed: faculty control approved resources, courses, rubrics, assessment settings, and publication policies.
 6. Researchable: evaluation, ablation, audit logs, and reproducible datasets are first-class components.
 
+## User counter note
+
+The current bottom-of-page counter is intentionally local and privacy-friendly: it counts distinct browsers that have visited the page using `localStorage`. It is **not** a global concurrent-user or total-user count. A real global counter should be added through the backend once deployment infrastructure is connected.
+
 ## Development status
 
-The repository is being established as a research-grade implementation. The MCP layer is intentionally designed before adding a full student UI so that educational capabilities remain modular, testable, and auditable.
+The MCP layer and full front-end prototype are established. The next integration stage is to connect the web interface to the orchestrator, RAG service, local LLM, persistent learner profiles, and production MCP transports. These backends should be connected only after their authentication, authorization, provenance, validation, and evaluation contracts are in place.
 
 ## Author
 
