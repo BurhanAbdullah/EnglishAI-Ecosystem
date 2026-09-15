@@ -51,7 +51,7 @@ server.registerTool(
       grammar: ['Check subject–verb agreement in each sentence.', 'Check tense consistency and explain why you chose each tense.'],
       vocabulary: ['Replace one repeated word with a precise alternative.', 'Check whether each advanced word is used naturally in context.']
     };
-    const value = { focus: `${focus} (${level})`, prompts: prompts[focus] };
+    const value = { focus: `${focus} (${level})`, prompts: prompts[focus]! };
     return { structuredContent: value, content: [{ type: 'text', text: JSON.stringify(value) }] };
   }
 );
@@ -80,4 +80,4 @@ server.registerPrompt(
   async ({ text, level }) => ({ messages: [{ role: 'user', content: { type: 'text', text: `Act as a ${level} English writing coach. Analyze this learner text: ${text}. Identify a small number of high-value improvements, explain why they matter, and ask the learner to revise. Do not replace the learner's complete text.` } }] })
 );
 
-await serveStdio(server);
+await serveStdio(() => server);
