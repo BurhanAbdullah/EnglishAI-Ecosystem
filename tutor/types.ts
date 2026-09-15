@@ -47,7 +47,7 @@ export interface TutorDecision {
   action: TutorAction;
   rationale: string[];
   recommendedDifficulty: number;
-  agents: AgentName[];
+  agents: readonly AgentName[];
   expectedOutcome: string;
 }
 
