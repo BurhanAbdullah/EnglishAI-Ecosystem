@@ -48,7 +48,6 @@ function analyzeText(text: string, level: string): GrammarIssue[] {
     });
   }
 
-  // Keep tense evidence local to a sentence so an unrelated “yesterday” does not trigger a false positive.
   for (const sentence of text.split(/[.!?]+/).map(value => value.trim()).filter(Boolean)) {
     const finishedTime = sentence.match(/\b(yesterday|last\s+(?:week|month|year)|\d+\s+(?:day|week|month|year)s?\s+ago)\b/i);
     const perfectAuxiliary = sentence.match(/\b(have|has)\b/i);
@@ -125,7 +124,7 @@ server.registerTool(
       ['He ___ (already/leave).', 'has already left'],
       ['They ___ (live) here for five years.', 'have lived']
     ];
-    const items = Array.from({ length: count }, (_, i) => ({ prompt: seed[i % seed.length][0], answer: seed[i % seed.length][1] }));
+    const items = Array.from({ length: count }, (_, i) => ({ prompt: seed[i % seed.length]![0], answer: seed[i % seed.length]![1] }));
     const value = { topic, level, items };
     return { structuredContent: value, content: [{ type: 'text', text: JSON.stringify(value) }] };
   }
@@ -140,4 +139,4 @@ server.registerPrompt(
   async ({ question, level }) => ({ messages: [{ role: 'user', content: { type: 'text', text: `You are an English grammar tutor. Explain ${question} for a ${level} learner. Explain the reason, give two examples, then ask one practice question. Do not simply provide the answer to an assessed task.` } }] })
 );
 
-await serveStdio(server);
+await serveStdio(() => server);
