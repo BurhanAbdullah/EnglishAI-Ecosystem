@@ -1,109 +1,82 @@
-const PROFILE_KEY = 'englishai-learner-profile-v1';
+const PROFILE_KEY = 'englishai-learner-profile-v2';
+const state = { profile: null, index: 0, score: 0, streak: 0, difficulty: 1 };
 
-const skillToQuestion = {
-  Grammar: {
-    prompt: 'Choose the correct sentence:',
-    options: ['She has worked here since 2022.', 'She work here since 2022.', 'She is work here since 2022.'],
-    answer: 0,
-    explanation: 'Use present perfect with “since” for an action that started in the past and continues now.'
-  },
-  Vocabulary: {
-    prompt: 'Which word is closest to “substantial”?',
-    options: ['minor', 'significant', 'uncertain'],
-    answer: 1,
-    explanation: '“Substantial” commonly means large, important, or significant.'
-  },
-  Reading: {
-    prompt: 'A text says: “The proposal was rejected because the evidence was insufficient.” Why was it rejected?',
-    options: ['The evidence was too weak.', 'The proposal was too long.', 'The evidence was confidential.'],
-    answer: 0,
-    explanation: '“Insufficient” means not enough for the purpose required.'
-  },
-  Writing: {
-    prompt: 'Which opening is most appropriate for an academic paragraph?',
-    options: ['This thing is really cool.', 'The findings indicate a clear relationship between the variables.', 'You know, the results are pretty good.'],
-    answer: 1,
-    explanation: 'Academic writing benefits from precise, neutral and evidence-oriented language.'
-  },
-  Speaking: {
-    prompt: 'Which phrase is best for politely asking for clarification?',
-    options: ['What?', 'Could you clarify what you mean by that?', 'Say it again.'],
-    answer: 1,
-    explanation: '“Could you clarify…” is a natural, polite request for clarification.'
-  },
-  Listening: {
-    prompt: 'In conversation, “I’ll get back to you” usually means:',
-    options: ['I will contact you later.', 'I am leaving permanently.', 'I disagree with you.'],
-    answer: 0,
-    explanation: 'The phrase normally means the speaker will respond or provide an update later.'
-  }
+const banks = {
+  Grammar: [
+    ['Choose the correct sentence:', ['She has worked here since 2022.', 'She work here since 2022.', 'She is work here since 2022.'], 0, 'Use present perfect with “since” for an action that started in the past and continues now.'],
+    ['Choose the correct sentence:', ['If I knew, I will tell you.', 'If I had known, I would have told you.', 'If I know, I would told you.'], 1, 'For a past unreal condition, use “if + past perfect” and “would have + past participle”.'],
+    ['Choose the best option:', ['By next year, she will have completed the course.', 'By next year, she completes the course.', 'By next year, she completed the course.'], 0, 'Use future perfect for an action completed before a future point.']
+  ],
+  Vocabulary: [
+    ['Which word is closest to “substantial”?', ['minor', 'significant', 'uncertain'], 1, '“Substantial” commonly means large, important, or significant.'],
+    ['Which word best completes the sentence? “The evidence was ___ enough to support the claim.”', ['compelling', 'fragilely', 'ordinary'], 0, '“Compelling” means convincing or persuasive.'],
+    ['Which word is closest to “mitigate”?', ['reduce', 'create', 'predict'], 0, 'To mitigate something is to make it less severe or harmful.']
+  ],
+  Reading: [
+    ['A proposal was rejected because the evidence was insufficient. Why?', ['The evidence was too weak.', 'The proposal was too long.', 'The evidence was confidential.'], 0, '“Insufficient” means not enough for the purpose required.'],
+    ['A study reports a correlation but says it cannot establish causation. What does that mean?', ['One variable definitely causes the other.', 'The variables are related, but cause is not established.', 'The variables are unrelated.'], 1, 'Correlation shows association; it does not by itself establish causation.'],
+    ['A text says a policy was “implemented gradually”. What happened?', ['It was introduced over time.', 'It was cancelled immediately.', 'It was never discussed.'], 0, '“Gradually” means progressively or over time.']
+  ],
+  Writing: [
+    ['Which opening is most appropriate for an academic paragraph?', ['This thing is really cool.', 'The findings indicate a clear relationship between the variables.', 'You know, the results are pretty good.'], 1, 'Academic writing benefits from precise, neutral and evidence-oriented language.'],
+    ['Which sentence is more concise?', ['Due to the fact that the results were unclear, we repeated the test.', 'Because the results were unclear, we repeated the test.'], 1, 'Prefer direct wording when it preserves the meaning.'],
+    ['Which transition best introduces a contrast?', ['Furthermore', 'However', 'Similarly'], 1, '“However” signals contrast between ideas.']
+  ],
+  Speaking: [
+    ['Which phrase is best for politely asking for clarification?', ['What?', 'Could you clarify what you mean by that?', 'Say it again.'], 1, '“Could you clarify…” is a natural, polite request for clarification.'],
+    ['Which phrase is most appropriate in a professional discussion?', ['I see your point; however, I have a different view.', 'You are wrong.', 'No, that makes no sense.'], 0, 'Professional disagreement can acknowledge another view before presenting a different position.'],
+    ['How can you politely interrupt someone?', ['Shut up for a second.', 'Sorry to interrupt, may I add something?', 'Stop talking.'], 1, '“Sorry to interrupt…” is a polite way to enter a conversation.']
+  ],
+  Listening: [
+    ['In conversation, “I’ll get back to you” usually means:', ['I will contact you later.', 'I am leaving permanently.', 'I disagree with you.'], 0, 'The phrase normally means the speaker will respond or provide an update later.'],
+    ['Someone says “That works for me.” What do they mean?', ['They agree with the plan.', 'They are confused.', 'They reject the plan.'], 0, '“That works for me” commonly means the proposal is acceptable.'],
+    ['Someone says “Let me think it over.” What will they probably do?', ['Decide immediately.', 'Consider it before deciding.', 'Forget the topic.'], 1, '“Think it over” means consider something carefully before deciding.']
+  ]
 };
 
 function $(id) { return document.getElementById(id); }
-
-function recommendation(profile) {
-  const level = profile.level === 'Not sure' ? 'your current level' : profile.level;
-  return `For ${level} ${profile.skill.toLowerCase()} practice, the tutor will start with a short diagnostic, then adapt the next activity from your answers. Goal: ${profile.goal}`;
+function questions() { return banks[state.profile.skill] || banks.Grammar; }
+function save() { localStorage.setItem(PROFILE_KEY, JSON.stringify({ ...state.profile, index: state.index, score: state.score, difficulty: state.difficulty })); }
+function bars(step) { $('s1').classList.toggle('on', step >= 1); $('s2').classList.toggle('on', step >= 2); $('s3').classList.toggle('on', step >= 3); }
+function showQuiz() { $('profile').classList.add('hidden'); $('quiz').classList.remove('hidden'); $('result').classList.add('hidden'); bars(2); renderQuestion(); }
+function renderQuestion() {
+  const qs = questions();
+  const q = qs[state.index % qs.length];
+  $('quiz-label').textContent = `${state.profile.skill} · Question ${state.index + 1} of ${qs.length}`;
+  $('question').textContent = q[0];
+  $('choices').innerHTML = q[1].map((x, i) => `<label class="choice"><input required type="radio" name="answer" value="${i}"> ${x}</label>`).join('');
+  $('feedback').classList.add('hidden');
+  $('quiz').querySelector('button').disabled = false;
+}
+function finish() {
+  const qs = questions();
+  const pct = Math.round((state.score / qs.length) * 100);
+  const level = pct >= 80 ? 'Ready for a challenge' : pct >= 50 ? 'Build confidence' : 'Strengthen the foundations';
+  $('quiz').classList.add('hidden'); $('result').classList.remove('hidden'); bars(3);
+  $('score').textContent = `${pct}%`; $('headline').textContent = level;
+  $('summary').textContent = `${state.profile.name}, your starting focus is ${state.profile.skill.toLowerCase()}. ${pct >= 80 ? 'The next activity should be more challenging.' : 'The next activity should include more support and targeted practice.'}`;
+  save();
 }
 
-function renderProfile(profile) {
-  $('profile-card').hidden = false;
-  $('profile-name').textContent = profile.name;
-  $('profile-meta').textContent = `${profile.level} · ${profile.skill}`;
-  $('profile-goal').textContent = profile.goal;
-  $('recommendation').textContent = recommendation(profile);
-  $('profile-form').hidden = true;
-  $('practice-card').hidden = false;
-  renderQuestion(profile.skill);
-}
-
-function renderQuestion(skill) {
-  const q = skillToQuestion[skill] || skillToQuestion.Grammar;
-  $('question').textContent = q.prompt;
-  $('options').innerHTML = '';
-  q.options.forEach((option, index) => {
-    const label = document.createElement('label');
-    label.className = 'option';
-    label.innerHTML = `<input type="radio" name="answer" value="${index}"> <span>${option}</span>`;
-    $('options').appendChild(label);
-  });
-  $('feedback').hidden = true;
-}
-
-$('profile-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-  const data = Object.fromEntries(new FormData(event.currentTarget));
-  const profile = {
-    name: data.name.trim(),
-    level: data.level,
-    skill: data.skill,
-    goal: data.goal.trim(),
-    preferences: data.preferences.trim(),
-    createdAt: new Date().toISOString()
-  };
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-  renderProfile(profile);
+$('profile').addEventListener('submit', e => {
+  e.preventDefault();
+  const d = Object.fromEntries(new FormData(e.currentTarget));
+  state.profile = { name: d.name.trim(), language: d.language.trim(), level: d.level, skill: d.skill, goal: d.goal.trim(), createdAt: new Date().toISOString() };
+  state.index = 0; state.score = 0; state.streak = 0; state.difficulty = 1; save(); showQuiz();
 });
 
-$('practice-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-  const profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
-  const q = skillToQuestion[profile.skill] || skillToQuestion.Grammar;
-  const selected = Number(new FormData(event.currentTarget).get('answer'));
-  $('feedback').hidden = false;
-  $('feedback').textContent = selected === q.answer
-    ? `Correct. ${q.explanation}`
-    : `Not quite. ${q.explanation}`;
+$('quiz').addEventListener('submit', e => {
+  e.preventDefault();
+  const selected = Number(new FormData(e.currentTarget).get('answer'));
+  const q = questions()[state.index % questions().length];
+  const correct = selected === q[2];
+  if (correct) { state.score++; state.streak++; state.difficulty = Math.min(3, state.difficulty + 1); }
+  else { state.streak = 0; state.difficulty = Math.max(1, state.difficulty - 1); }
+  $('feedback').textContent = correct ? `Correct. ${q[3]}` : `Not quite. ${q[3]}`;
+  $('feedback').classList.remove('hidden');
+  e.currentTarget.querySelector('button').disabled = true;
+  state.index++;
+  setTimeout(() => { if (state.index >= questions().length) finish(); else { save(); renderQuestion(); } }, 700);
 });
 
-$('reset-profile').addEventListener('click', () => {
-  localStorage.removeItem(PROFILE_KEY);
-  location.reload();
-});
-
-try {
-  const saved = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
-  if (saved?.name) renderProfile(saved);
-} catch (_) {
-  localStorage.removeItem(PROFILE_KEY);
-}
+$('next').addEventListener('click', () => { state.index = 0; state.score = 0; state.streak = 0; showQuiz(); });
