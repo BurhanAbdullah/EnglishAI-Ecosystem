@@ -70,4 +70,4 @@ server.registerPrompt(
   async ({ question, level }) => ({ messages: [{ role: 'user', content: { type: 'text', text: `Answer for a ${level} English learner: ${question}. Separate source-supported evidence from your explanation. Do not invent quotations. Include source identifiers for retrieved material.` } }] })
 );
 
-await serveStdio(server);
+await serveStdio(() => server);
