@@ -1,4 +1,4 @@
-name: EnglishAI Ecosystem CI
+name: Modern English CI
 
 on:
   push:
@@ -25,22 +25,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: npm
-
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-
       - name: Typecheck
         run: npm run typecheck
-
       - name: Unit and contract tests
         run: npm test
-
       - name: Website validation
         run: npm run validate:site
 
@@ -57,6 +52,9 @@ jobs:
           for f in index.html platform.html capabilities.html architecture.html research.html docs.html tutor.html learner.html join.html assets/site.css assets/learner-app.js; do
             test -f "docs/$f"
           done
-          grep -q 'id="live-tutor"' docs/index.html
-          grep -q 'learner.html' docs/index.html
-          echo "Static website smoke test passed."
+          grep -q 'Modern English' docs/index.html
+          grep -q 'join.html' docs/index.html
+          grep -q 'Dr. Mudasir Rahman' docs/index.html
+          grep -q 'Dr. Mudasir Rahman' docs/join.html
+          grep -q 'Drmudasirrahman' docs/join.html
+          echo "Modern English website smoke test passed."
