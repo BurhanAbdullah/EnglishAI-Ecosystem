@@ -80,4 +80,4 @@ server.registerPrompt(
   async ({ correct, skill, level }) => ({ messages: [{ role: 'user', content: { type: 'text', text: `Give a ${level} learner concise formative feedback for a ${skill} item. Correct=${correct}. Explain the reasoning, identify one next step, and encourage another attempt.` } }] })
 );
 
-await serveStdio(server);
+await serveStdio(() => server);
