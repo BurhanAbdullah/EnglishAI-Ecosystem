@@ -1,0 +1,62 @@
+name: EnglishAI Ecosystem CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit and contract tests
+        run: npm test
+
+      - name: Website validation
+        run: npm run validate:site
+
+  pages-smoke:
+    name: Static Pages Smoke Test
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify required pages and assets
+        run: |
+          set -eu
+          for f in index.html platform.html capabilities.html architecture.html research.html docs.html tutor.html learner.html join.html assets/site.css assets/learner-app.js; do
+            test -f "docs/$f"
+          done
+          grep -q 'id="live-tutor"' docs/index.html
+          grep -q 'learner.html' docs/index.html
+          echo "Static website smoke test passed."
