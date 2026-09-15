@@ -72,7 +72,7 @@ server.registerTool(
     const key = word.toLowerCase() as keyof typeof entries;
     const item = entries[key];
     if (!item) throw new Error(`Word not present in development lexicon: ${word}`);
-    const items = Array.from({ length: count }, (_, i) => ({ prompt: `Complete a sentence using “${key}” in context ${i + 1}.`, answer: item.examples[0] }));
+    const items = Array.from({ length: count }, (_, i) => ({ prompt: `Complete a sentence using “${key}” in context ${i + 1}.`, answer: item.examples[0]! }));
     const value = { word: key, level, items };
     return { structuredContent: value, content: [{ type: 'text', text: JSON.stringify(value) }] };
   }
@@ -87,4 +87,4 @@ server.registerPrompt(
   async ({ word, level }) => ({ messages: [{ role: 'user', content: { type: 'text', text: `Teach the word “${word}” to a ${level} English learner. Explain meaning, part of speech, two collocations, one example, and finish with a short retrieval-practice question.` } }] })
 );
 
-await serveStdio(server);
+await serveStdio(() => server);
