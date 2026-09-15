@@ -32,7 +32,8 @@ describe('shared MCP contracts', () => {
   it('accepts provenance when source identity is present', () => {
     const result = provenanceSchema.safeParse({
       title: 'Grammar Source',
-      source: 'https://example.org/grammar',
+      sourceId: 'grammar-source-001',
+      uri: 'https://example.org/grammar',
       retrievedAt: new Date().toISOString()
     });
     expect(result.success).toBe(true);
