@@ -57,7 +57,7 @@ server.registerTool(
   },
   async ({ count, level }) => {
     const seed = ['What is the main idea?', 'Which detail best supports the main idea?', 'What does the author want the reader to understand?', 'Which word in the passage is closest in meaning to an important concept?', 'How would you summarize the passage in one sentence?'];
-    const questions = Array.from({ length: count }, (_, i) => seed[i % seed.length]);
+    const questions = Array.from({ length: count }, (_, i) => seed[i % seed.length]!);
     const value = { level, questions };
     return { structuredContent: value, content: [{ type: 'text', text: JSON.stringify(value) }] };
   }
@@ -72,4 +72,4 @@ server.registerPrompt(
   async ({ text, question, level }) => ({ messages: [{ role: 'user', content: { type: 'text', text: `Act as a reading tutor for a ${level} learner. Passage: ${text}\nQuestion: ${question}\nFirst ask the learner where they found evidence. Then guide them toward the answer and explain the reasoning.` } }] })
 );
 
-await serveStdio(server);
+await serveStdio(() => server);
