@@ -98,4 +98,4 @@ server.registerPrompt(
   })
 );
 
-await serveStdio(server);
+await serveStdio(() => server);
