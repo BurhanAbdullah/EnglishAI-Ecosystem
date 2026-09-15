@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Architecture — EnglishAI Ecosystem</title><link rel="stylesheet" href="./assets/site.css"></head><body><header class="nav"><a class="brand" href="./index.html"><span class="mark">E</span><span>EnglishAI <i>Ecosystem</i></span></a><nav><a href="./index.html">Home</a><a href="./platform.html">Platform</a><a href="./capabilities.html">Capabilities</a><a class="active" href="./architecture.html">Architecture</a><a href="./research.html">Research</a><a href="./docs.html">Docs</a></nav><a class="github" href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">GitHub ↗</a></header><main><section class="subhero"><div class="eyebrow">Architecture</div><h1>Evidence in. Bounded action. <em>Learning out.</em></h1><p class="lead">The architecture separates learner context, knowledge retrieval, capability selection, schema validation, policy, execution, provenance and learning-state signals.</p></section><section class="section compact"><div class="card"><pre class="code">Learner / Teacher
+        ↓
+Application / Orchestrator
+        ↓
+Learner Context ─── Knowledge / RAG
+        ↓                     ↓
+     Capability Selection ← Evidence
+        ↓
+Schema Validation
+        ↓
+Authorization / Policy
+        ↓
+MCP Capability
+        ↓
+Structured Result + Provenance
+        ↓
+Local LLM
+        ↓
+Explanation / Practice / Feedback
+        ↓
+Assessment Signal / Learning State</pre></div></section><section class="section"><div class="eyebrow">Request lifecycle</div><h2>Sixteen explicit steps from request to next practice.</h2><div class="grid three"><article><span class="num">01–04</span><h3>Establish context</h3><p>Receive request, establish identity, load learner context, then determine intent and target skill.</p></article><article><span class="num">05–08</span><h3>Prepare execution</h3><p>Determine retrieval needs, retrieve authorised evidence, select a capability and validate its input schema.</p></article><article><span class="num">09–12</span><h3>Execute safely</h3><p>Apply permission and policy checks, execute the bounded MCP operation, return structured results and provenance, then generate the learner-facing response.</p></article><article><span class="num">13–16</span><h3>Close the learning loop</h3><p>Present activity, record permitted attempts and signals, update learning state where permitted, and select subsequent practice.</p></article><article><span class="num">RAG</span><h3>Authorised retrieval</h3><p>Resources are cleaned, chunked and metadata-enriched before retrieval and filtering. Production vector databases, embeddings and rerankers remain implementation decisions.</p></article><article><span class="num">MCP</span><h3>Capability contract</h3><p>Capabilities are modelled with name, description, input/output schema, version, permissions, safety constraints and evidence requirements.</p></article></div></section><section class="section tinted"><div class="eyebrow">Governance boundary</div><h2>Generated text does not get an implicit execution channel.</h2><p class="lead">The intended boundary places schema validation, permission checks and policy enforcement between orchestration and specialised MCP operations. Production deployment additionally requires authentication, least privilege, allow-lists, auditability, credential isolation and learner-data lifecycle controls.</p></section></main><footer><div><a class="brand light" href="./index.html"><span class="mark">E</span><span>EnglishAI <i>Ecosystem</i></span></a><p>AI-assisted English learning and teaching infrastructure.</p></div><div class="footlinks"><a href="./platform.html">Platform</a><a href="./capabilities.html">Capabilities</a><a href="./research.html">Research</a><a href="./docs.html">Docs</a></div><div class="copyright">© 2026 Burhan Abdullah · Prototype / active development</div></footer></body></html>
