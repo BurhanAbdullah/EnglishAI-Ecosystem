@@ -1,15 +1,19 @@
 name: Deploy EnglishAI Ecosystem website
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
   deploy:
     environment:
@@ -19,12 +23,29 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
+
+      - name: Verify website files
+        run: |
+          test -f docs/index.html
+          test -f docs/learner.html
+          test -f docs/platform.html
+          test -f docs/capabilities.html
+          test -f docs/architecture.html
+          test -f docs/research.html
+          test -f docs/docs.html
+          test -f docs/join.html
+          test -f docs/assets/site.css
+          test -f docs/assets/learner-app.js
+          echo "Website files verified."
+
       - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./docs
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
