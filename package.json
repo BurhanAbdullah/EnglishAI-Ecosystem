@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:mcp": "vitest run tests/mcp",
+    "validate:site": "node scripts/validate-site.mjs",
     "dev:content": "tsx mcp-servers/english-content/src/index.ts",
     "dev:grammar": "tsx mcp-servers/grammar/src/index.ts",
     "dev:vocabulary": "tsx mcp-servers/vocabulary/src/index.ts",
