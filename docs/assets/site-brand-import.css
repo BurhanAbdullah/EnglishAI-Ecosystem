@@ -1,0 +1,2 @@
+@import url('./brand.css');
+html{scroll-behavior:smooth}.site-header{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--eai-border)}.nav-inner nav a{border-radius:9px}.nav-inner nav a:hover,.nav-inner nav a[aria-current=page]{background:var(--eai-soft);color:var(--eai-blue)}.site-footer{border-top:1px solid var(--eai-border);color:var(--eai-muted)}
