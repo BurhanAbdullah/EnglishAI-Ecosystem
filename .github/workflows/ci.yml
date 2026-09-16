@@ -52,15 +52,18 @@ jobs:
       - name: Verify required pages and assets
         run: |
           set -eu
-          for f in index.html platform.html capabilities.html architecture.html research.html docs.html tutor.html learner.html join.html login.html profile.html dashboard.html admin/login.html assets/site.css assets/ux.css assets/tokens.css assets/learner-app.js assets/auth.js assets/profile.js assets/dashboard.js assets/auth-pages.js assets/admin-auth.js; do
+          for f in index.html platform.html capabilities.html architecture.html research.html docs.html tutor.html learner.html join.html login.html profile.html dashboard.html about.html admin/login.html assets/site.css assets/ux.css assets/tokens.css assets/learner-app.js assets/adaptive-lesson.js assets/secure-store.js assets/auth.js assets/profile.js assets/dashboard.js assets/auth-pages.js assets/admin-auth.js; do
             test -f "docs/$f"
           done
           grep -q 'Modern English' docs/index.html
           grep -q 'join.html' docs/index.html
+          grep -q 'about.html' docs/index.html
           grep -q 'Dr. Mudasir Rahman' docs/join.html
           grep -q 'Drmudasirrahman' docs/join.html
           grep -q 'font-family' docs/assets/site.css
           grep -q 'Inter' docs/assets/site.css
           grep -q 'font-family' docs/assets/tokens.css
           grep -q 'Inter' docs/assets/tokens.css
+          grep -q 'AES-GCM' docs/assets/secure-store.js
+          grep -q 'adaptiveLesson' docs/assets/adaptive-lesson.js
           echo "Modern English website smoke test passed."
