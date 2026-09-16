@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  LEARNER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING
+}
+
+enum JoinRole {
+  RESEARCHER
+  EDUCATOR
+  ENGINEER
+  CONTRIBUTOR
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id                String           @id @default(cuid())
+  email             String           @unique
+  passwordHash      String?
+  name              String?
+  role              UserRole         @default(LEARNER)
+  status            UserStatus       @default(ACTIVE)
+  createdAt         DateTime         @default(now())
+  lastLoginAt       DateTime?
+  emailVerifiedAt   DateTime?
+  learnerProfile    LearnerProfile?
+  usageEvents       UsageEvent[]
+  adminAuditLogs    AdminAuditLog[]  @relation("AdminAuditActor")
+  reviewedApplications JoinApplication[] @relation("ApplicationReviewer")
+}
+
+model LearnerProfile {
+  userId            String   @id
+  level             String?
+  goals             String?
+  targetSkills      String[] @default([])
+  usageQuota        Int      @default(100)
+  usageThisPeriod   Int      @default(0)
+  periodResetAt     DateTime @default(now())
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UsagePolicy {
+  id                 Int      @id @default(1)
+  dailyMessageLimit  Int      @default(100)
+  monthlyMessageLimit Int     @default(2000)
+  allowedAgents      String[] @default(["grammar", "vocabulary", "reading", "writing", "assessment", "citation"])
+  maintenanceMode    Boolean  @default(false)
+  updatedAt          DateTime @updatedAt
+}
+
+model UsageEvent {
+  id                  String   @id @default(cuid())
+  userId              String
+  agentUsed           String
+  tokensOrCallsConsumed Int
+  createdAt           DateTime @default(now())
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, createdAt])
+  @@index([agentUsed, createdAt])
+}
+
+model JoinApplication {
+  id                String            @id @default(cuid())
+  applicantName     String
+  applicantEmail    String
+  role              JoinRole
+  motivation        String
+  cvDriveUrl        String
+  status            ApplicationStatus @default(PENDING)
+  reviewedByAdminId String?
+  reviewedAt        DateTime?
+  createdAt         DateTime          @default(now())
+  reviewedByAdmin   User?             @relation("ApplicationReviewer", fields: [reviewedByAdminId], references: [id], onDelete: SetNull)
+  @@index([status, createdAt])
+  @@index([applicantEmail, createdAt])
+}
+
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  adminId    String
+  action     String
+  targetType String
+  targetId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  admin      User     @relation("AdminAuditActor", fields: [adminId], references: [id], onDelete: Restrict)
+  @@index([adminId, createdAt])
+  @@index([targetType, targetId, createdAt])
+}
