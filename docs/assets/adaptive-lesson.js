@@ -1,5 +1,6 @@
 (() => {
   function parse(r) { const t = (r?.content || []).map(x => x.text || '').join(''); try { return JSON.parse(t); } catch { return null; } }
+  function profile() { try { return JSON.parse(localStorage.getItem('englishai-learner-profile-v2') || '{}'); } catch { return {}; } }
   function show(data) {
     if (!data?.lesson) return;
     const result = document.getElementById('result'); if (!result) return;
@@ -15,7 +16,15 @@
     const ex = data.lesson.exercise || {}, picked = Array.isArray(ex.choices) ? document.querySelector('input[name="adaptive-choice"]:checked')?.value : document.getElementById('adaptiveAnswer')?.value;
     if (picked == null || picked === '') return;
     const answer = Array.isArray(ex.choices) ? ex.choices[Number(picked)] : picked, expected = ex.expectedAnswer || answer, out = document.getElementById('adaptiveHint');
-    try { const r = await window.ModernEnglishAuth.mcpCall('assessment', 'validate_answer', { answer: String(answer), expectedAnswer: String(expected), explain: true }); const p = parse(r); out.textContent = p?.feedback || 'Response recorded.'; } catch { out.textContent = 'Assessment service is temporarily unavailable.'; }
+    try {
+      const r = await window.ModernEnglishAuth.mcpCall('assessment', 'validate_answer', { answer: String(answer), expectedAnswer: String(expected), explain: true });
+      const p = parse(r); out.textContent = p?.feedback || 'Response recorded.';
+      const learner = profile();
+      if (learner.learnerId && learner.skill) {
+        const next = await window.ModernEnglishAuth.mcpCall('tutor', 'tutor_turn', { learnerId: learner.learnerId, proficiency: learner.level === 'Not sure' ? 'B1' : learner.level, firstLanguage: learner.language || undefined, skill: String(learner.skill).toLowerCase(), learningGoal: learner.goal || 'Improve English', message: String(answer), attempts: [{ correct: Boolean(p?.correct), difficulty: Number(data.lesson.difficulty || 0.5), confidence: Boolean(p?.correct) ? 0.9 : 0.5, errorType: Boolean(p?.correct) ? undefined : `${String(learner.skill).toLowerCase()}-item-error`, timestamp: new Date().toISOString() }] });
+        const nextData = parse(next); if (nextData?.lesson) show(nextData);
+      }
+    } catch { out.textContent = 'Assessment service is temporarily unavailable.'; }
   }
   function safe(v) { return String(v).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
   function install() { if (!window.ModernEnglishAuth?.mcpCall || window.__adaptiveLessonInstalled) return; const original = window.ModernEnglishAuth.mcpCall.bind(window.ModernEnglishAuth); window.ModernEnglishAuth.mcpCall = async (...args) => { const r = await original(...args); if (args[0] === 'tutor' && args[1] === 'tutor_turn') show(parse(r)); return r; }; window.__adaptiveLessonInstalled = true; }
