@@ -55,15 +55,30 @@ jobs:
           for f in index.html platform.html capabilities.html architecture.html research.html docs.html tutor.html learner.html join.html login.html profile.html dashboard.html about.html admin/login.html assets/site.css assets/ux.css assets/tokens.css assets/learner-app.js assets/adaptive-lesson.js assets/secure-store.js assets/auth.js assets/profile.js assets/dashboard.js assets/auth-pages.js assets/admin-auth.js; do
             test -f "docs/$f"
           done
-          grep -q 'Modern English' docs/index.html
-          grep -q 'join.html' docs/index.html
-          grep -q 'about.html' docs/index.html
-          grep -q 'Dr. Mudasir Rahman' docs/join.html
-          grep -q 'Drmudasirrahman' docs/join.html
-          grep -q 'font-family' docs/assets/site.css
-          grep -q 'Inter' docs/assets/site.css
-          grep -q 'font-family' docs/assets/tokens.css
-          grep -q 'Inter' docs/assets/tokens.css
-          grep -q 'AES-GCM' docs/assets/secure-store.js
-          grep -q 'adaptiveLesson' docs/assets/adaptive-lesson.js
-          echo "Modern English website smoke test passed."
+          node <<'NODE'
+          const fs = require('fs');
+          const checks = [
+            ['Modern English landing page', 'docs/index.html', 'Modern English'],
+            ['landing page join link', 'docs/index.html', 'join.html'],
+            ['landing page about link', 'docs/index.html', 'about.html'],
+            ['project lead name', 'docs/join.html', 'Dr. Mudasir Rahman'],
+            ['project lead GitHub handle', 'docs/join.html', 'Drmudasirrahman'],
+            ['site font declaration', 'docs/assets/site.css', 'font-family'],
+            ['site Inter font', 'docs/assets/site.css', 'Inter'],
+            ['token font declaration', 'docs/assets/tokens.css', 'font-family'],
+            ['token Inter font', 'docs/assets/tokens.css', 'Inter'],
+            ['encrypted local storage', 'docs/assets/secure-store.js', 'AES-GCM'],
+            ['adaptive lesson UI', 'docs/assets/adaptive-lesson.js', 'adaptiveLesson']
+          ];
+          const failures = [];
+          for (const [label, file, needle] of checks) {
+            const text = fs.readFileSync(file, 'utf8');
+            if (!text.includes(needle)) failures.push(`${label}: missing "${needle}" in ${file}`);
+          }
+          if (failures.length) {
+            console.error('Static Pages Smoke Test failed:');
+            for (const failure of failures) console.error(` - ${failure}`);
+            process.exit(1);
+          }
+          console.log(`Static Pages Smoke Test passed (${checks.length} content checks).`);
+          NODE
