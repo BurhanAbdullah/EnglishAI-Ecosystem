@@ -114,9 +114,13 @@ createServer(async (req, res) => {
   const chunks: Buffer[] = [];
   for await (const chunk of req) chunks.push(Buffer.from(chunk));
   const body = Buffer.concat(chunks);
+  const headers: Record<string, string> = {};
+  for (const [key, value] of Object.entries(req.headers)) {
+    if (value !== undefined) headers[key] = Array.isArray(value) ? value.join(', ') : value;
+  }
   const request = new Request(`https://${req.headers.host ?? 'localhost'}${url.pathname}${url.search}`, {
     method: req.method,
-    headers: Object.entries(req.headers).flatMap(([key, value]) => value ? [[key, Array.isArray(value) ? value.join(', ') : value]] : []),
+    headers,
     body: req.method === 'GET' || req.method === 'HEAD' ? undefined : body
   });
   const response = await handler.fetch(request);
