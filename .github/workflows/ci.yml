@@ -60,7 +60,7 @@ jobs:
           const checks = [
             ['Modern English landing page', 'docs/index.html', 'Modern English'],
             ['landing page join link', 'docs/index.html', 'join.html'],
-            ['landing page about link', 'docs/index.html', 'about.html'],
+            ['landing page about link', 'docs/index.html', 'href="./about.html"'],
             ['shared site stylesheet', 'docs/index.html', 'assets/site.css'],
             ['shared token stylesheet', 'docs/index.html', 'assets/tokens.css'],
             ['project lead name', 'docs/join.html', 'Dr. Mudasir Rahman'],
