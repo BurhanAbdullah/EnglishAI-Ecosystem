@@ -39,6 +39,8 @@ jobs:
         run: npm test
       - name: MCP gateway and tutor integration test
         run: npm run verify:mcp-gateway
+      - name: Multi-agent MCP integration test
+        run: node scripts/verify-mcp-multi-agent.mjs
       - name: Website validation
         run: npm run validate:site
 
