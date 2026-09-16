@@ -1,0 +1,25 @@
+/* Modern English — premium visual layer. Shared across every page. */
+:root{--premium-red:#c81e1e;--premium-red-2:#8f1212;--premium-ink:#101114;--premium-soft:#fff5f5;--premium-glass:rgba(255,255,255,.78)}
+body{background:var(--bg)!important}
+body:before{opacity:.9}
+.nav{isolation:isolate;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important}
+.nav:hover{box-shadow:0 18px 52px rgba(15,18,24,.13)!important;border-color:rgba(200,30,30,.16)!important}
+.brand{font-size:17px!important}.brand .mark,.mark{box-shadow:0 5px 16px rgba(200,30,30,.18)}
+.desktop-nav>a{position:relative}.desktop-nav>a:after{content:"";position:absolute;left:14px;right:14px;bottom:6px;height:2px;border-radius:99px;background:var(--premium-red);transform:scaleX(0);transform-origin:center;transition:transform .2s ease}.desktop-nav>a:hover:after,.desktop-nav>a.active:after{transform:scaleX(1)}
+.nav-cta{box-shadow:0 7px 18px rgba(16,17,20,.12)!important}.nav-cta:hover{box-shadow:0 10px 24px rgba(200,30,30,.2)!important}
+.hero--premium{position:relative}.hero--premium:before{content:"";position:absolute;inset:50px 0 auto auto;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(200,30,30,.10),transparent 68%);pointer-events:none;z-index:-1}
+.hero-copy h1 em,h1 em,h2 em{font-style:normal;background:linear-gradient(110deg,var(--premium-red),#e24a4a 48%,var(--premium-red-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow{display:inline-flex;align-items:center;padding:7px 11px;border:1px solid rgba(200,30,30,.14);border-radius:999px;background:rgba(255,248,248,.72);box-shadow:0 4px 16px rgba(200,30,30,.045)}
+.lead{color:#4a5059!important}.actions .btn{box-shadow:0 5px 16px rgba(15,23,42,.045)}
+.hero-panel{border:1px solid rgba(20,20,25,.12)!important;box-shadow:0 28px 70px rgba(15,18,24,.13)!important;transform:translateY(0);transition:transform .35s ease,box-shadow .35s ease}.hero-panel:hover{transform:translateY(-5px);box-shadow:0 34px 84px rgba(15,18,24,.17)!important}
+.proof-strip{border:1px solid rgba(20,20,25,.09)!important;border-radius:var(--radius-card)!important;background:rgba(255,255,255,.82)!important;box-shadow:0 16px 42px rgba(15,18,24,.07)!important;backdrop-filter:blur(18px)}
+.proof-strip>div{transition:background .2s ease,transform .2s ease}.proof-strip>div:hover{background:#fff;transform:translateY(-2px)}
+.feature-grid article,.grid article,.card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}.feature-grid article:hover,.grid article:hover,.card:hover{transform:translateY(-4px);box-shadow:0 18px 45px rgba(15,18,24,.09);border-color:rgba(200,30,30,.18)}
+.feature.large{position:relative;overflow:hidden;box-shadow:0 22px 55px rgba(0,0,0,.14)!important}.feature.large:after{content:"";position:absolute;width:230px;height:230px;right:-75px;top:-75px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 68%);pointer-events:none}
+.section-heading{max-width:850px}.section-heading>p{font-size:18px;line-height:1.7;color:#5b616a}
+.tinted{position:relative;overflow:hidden}.tinted:before{content:"";position:absolute;width:520px;height:520px;right:-180px;top:-260px;border-radius:50%;background:radial-gradient(circle,rgba(200,30,30,.18),transparent 67%);pointer-events:none}.tinted .eyebrow{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.12)}
+.tinted article{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.1);backdrop-filter:blur(12px)}.tinted article:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.2)}
+.join-banner{position:relative;padding:48px;border:1px solid rgba(200,30,30,.1);border-radius:var(--radius-panel);background:linear-gradient(135deg,#fff 0%,#fff7f7 100%);box-shadow:0 20px 55px rgba(15,18,24,.07);overflow:hidden}.join-banner:after{content:"";position:absolute;width:300px;height:300px;right:-120px;bottom:-170px;border-radius:50%;background:radial-gradient(circle,rgba(200,30,30,.12),transparent 68%)}
+footer{border-top:1px solid rgba(255,255,255,.06)}
+@media(max-width:900px){.hero--premium:before{width:280px;height:280px}.join-banner{padding:30px}.desktop-nav>a:after{display:none}}
+@media(prefers-reduced-motion:reduce){.hero-panel,.feature-grid article,.grid article,.card,.proof-strip>div,.nav{transition:none!important}.hero-panel:hover,.feature-grid article:hover,.grid article:hover,.card:hover,.proof-strip>div:hover{transform:none}}
