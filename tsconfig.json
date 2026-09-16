@@ -11,5 +11,5 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "vitest/globals"]
   },
-  "include": ["mcp-servers/**/*.ts", "tests/**/*.ts", "schemas/**/*.ts", "tutor/**/*.ts"]
+  "include": ["mcp-gateway/**/*.ts", "mcp-servers/**/*.ts", "tests/**/*.ts", "schemas/**/*.ts", "tutor/**/*.ts"]
 }
