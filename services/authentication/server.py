@@ -17,9 +17,11 @@ PORT = int(os.getenv("PORT", "8080"))
 AUTH_SECRET = os.getenv("AUTH_SECRET", "")
 GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "")
 GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "")
-SITE_URL = os.getenv("SITE_URL", "https://englishai-ecosystem-live.onrender.com").rstrip("/")
+AUTH_SITE_URL = os.getenv("SITE_URL", "https://englishai-ecosystem-live.onrender.com").rstrip("/")
+PUBLIC_SITE_URL = os.getenv("PUBLIC_SITE_URL", "https://burhanabdullah.github.io/EnglishAI-Ecosystem").rstrip("/")
 COOKIE_NAME = "modern_english_session"
 STATE_TTL = 600
+ALLOWED_ORIGINS = {AUTH_SITE_URL, PUBLIC_SITE_URL}
 
 
 def b64(value: bytes) -> str:
@@ -61,18 +63,23 @@ def configured():
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "ModernEnglishAuth/1.0"
+    server_version = "ModernEnglishAuth/1.1"
 
     def log_message(self, fmt, *args):
         print("[auth] " + (fmt % args))
+
+    def cors_origin(self):
+        origin = self.headers.get("Origin", "")
+        return origin if origin in ALLOWED_ORIGINS else AUTH_SITE_URL
 
     def json(self, status: int, body: dict, extra_headers=None):
         encoded = json.dumps(body).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Cache-Control", "no-store")
-        self.send_header("Access-Control-Allow-Origin", SITE_URL)
+        self.send_header("Access-Control-Allow-Origin", self.cors_origin())
         self.send_header("Access-Control-Allow-Credentials", "true")
+        self.send_header("Vary", "Origin")
         if extra_headers:
             for key, value in extra_headers:
                 self.send_header(key, value)
@@ -90,16 +97,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(HTTPStatus.NO_CONTENT)
-        self.send_header("Access-Control-Allow-Origin", SITE_URL)
+        self.send_header("Access-Control-Allow-Origin", self.cors_origin())
         self.send_header("Access-Control-Allow-Credentials", "true")
         self.send_header("Access-Control-Allow-Methods", "GET,OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Vary", "Origin")
         self.end_headers()
 
     def do_GET(self):
         path = self.path.split("?", 1)[0]
         if path == "/healthz":
-            self.json(200, {"ok": True, "configured": configured()})
+            self.json(200, {"ok": True, "configured": configured(), "public_site": PUBLIC_SITE_URL})
             return
         if path == "/auth/github":
             self.start_github_login()
@@ -122,7 +130,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def start_github_login(self):
         if not configured():
-            self.redirect(SITE_URL + "/signup.html?auth=not-configured")
+            self.redirect(PUBLIC_SITE_URL + "/signup.html?auth=not-configured")
             return
         state = sign({"nonce": secrets.token_urlsafe(24), "exp": int(time.time()) + STATE_TTL})
         params = urlencode({
@@ -155,7 +163,7 @@ class Handler(BaseHTTPRequestHandler):
         state_cookie = self.cookies().get("modern_english_oauth_state")
         expected_state = state_cookie.value if state_cookie else ""
         if not code or not state or not expected_state or not hmac.compare_digest(state, expected_state) or not verify(state):
-            self.redirect(SITE_URL + "/signup.html?auth=invalid-state")
+            self.redirect(PUBLIC_SITE_URL + "/signup.html?auth=invalid-state")
             return
         try:
             token_body = urlencode({
@@ -194,12 +202,12 @@ class Handler(BaseHTTPRequestHandler):
                 "iat": int(time.time()),
                 "exp": int(time.time()) + 60 * 60 * 24 * 30,
             }
-            token_cookie = f"{COOKIE_NAME}={sign(session)}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax"
+            token_cookie = f"{COOKIE_NAME}={sign(session)}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=None"
             clear_state = "modern_english_oauth_state=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
-            self.redirect(SITE_URL + "/learner.html?login=success", [token_cookie, clear_state])
+            self.redirect(PUBLIC_SITE_URL + "/learner.html?login=success", [token_cookie, clear_state])
         except (HTTPError, OSError, ValueError, RuntimeError) as exc:
             print(f"[auth] GitHub callback failed: {exc}")
-            self.redirect(SITE_URL + "/signup.html?auth=failed")
+            self.redirect(PUBLIC_SITE_URL + "/signup.html?auth=failed")
 
     def current_user(self):
         cookie = self.cookies().get(COOKIE_NAME)
@@ -212,12 +220,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def logout(self):
         self.json(200, {"ok": True}, [
-            ("Set-Cookie", f"{COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax")
+            ("Set-Cookie", f"{COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=None")
         ])
 
 
 if __name__ == "__main__":
     if not AUTH_SECRET:
         print("[auth] WARNING: AUTH_SECRET is not configured")
-    print(f"[auth] listening on {HOST}:{PORT}; GitHub OAuth configured={configured()}")
+    print(f"[auth] listening on {HOST}:{PORT}; GitHub OAuth configured={configured()}; public site={PUBLIC_SITE_URL}")
     ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
