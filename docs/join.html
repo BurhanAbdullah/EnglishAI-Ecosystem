@@ -1,1 +1,96 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Join Modern English, an adaptive English learning and open research project."><title>Community | Modern English</title><link rel="stylesheet" href="./assets/site.css"></head><body><header class="nav"><a class="brand" href="./index.html"><span class="mark">M</span><span>Modern <i>English</i></span></a><nav class="desktop-nav"></nav><div class="nav-actions"><a class="nav-cta" href="./signup.html">Sign up / Log in</a></div></header><main><section class="hero"><div class="join-hero"><div><div class="eyebrow"><span class="status-dot"></span> Open community, research and engineering</div><h1>Build the future of English learning <em>with us.</em></h1><p class="lead">Modern English brings together educators, researchers, developers and language specialists to build practical tools for people learning English.</p><div class="actions"><a class="btn primary" href="#join">Join the project</a><a class="btn" href="./signup.html">Create an account</a></div></div><aside class="join-box"><div class="eyebrow">Project lead</div><div class="project-lead"><img src="https://github.com/Drmudasirrahman.png?size=240" alt="Dr. Mudasir Rahman, project lead" loading="lazy"><div><div class="project-lead-name">Dr. Mudasir Rahman</div><div class="project-lead-role">Project lead<br>Research, learning systems and technical development</div></div></div><p>Coordinates the research, technical development and community contribution around Modern English.</p><a class="btn btn--white" href="https://github.com/Drmudasirrahman">Connect on GitHub</a></aside></div></section><section id="join" class="section"><div class="card form-panel"><div class="eyebrow">Join Modern English</div><h2>Tell us what you want to build.</h2><p class="muted">Share a little about yourself and the kind of work you would like to contribute. Your introduction is prepared in your browser.</p><form id="joinForm"><div class="fields"><div class="field"><label>Name *</label><input required name="name" autocomplete="name"></div><div class="field"><label>Email *</label><input required type="email" name="email" autocomplete="email"></div><div class="field"><label>Role or affiliation</label><input name="role" placeholder="Researcher, educator, developer"></div><div class="field"><label>Country or region</label><input name="country"></div><div class="field full"><label>Contribution area *</label><select required name="area"><option value="">Choose one</option><option>AI, ML and NLP</option><option>Software engineering</option><option>English language teaching</option><option>Learning science and assessment</option><option>RAG and knowledge systems</option><option>MCP and agent systems</option><option>Adaptive tutoring</option><option>Research and open science</option><option>Documentation and community</option><option>Other</option></select></div><div class="field full"><label>Profile, GitHub or portfolio</label><input type="url" name="profile" placeholder="https://"></div><div class="field full"><label>What interests you? *</label><textarea required name="interest"></textarea></div><div class="field full"><label>How can you contribute? *</label><textarea required name="contribution"></textarea></div></div><div class="actions"><button class="btn primary" type="submit">Prepare introduction</button><a class="btn" href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">Open repository</a></div><p class="local">Local first. Nothing is uploaded automatically.</p></form><div id="done" class="card card--dark" hidden><div class="eyebrow">Ready</div><h3>Your introduction is prepared.</h3><p id="doneText"></p></div></div></section><section class="section"><div class="section-heading"><div class="eyebrow">Ways to contribute</div><h2>Bring what you know.</h2></div><div class="grid three"><article><span class="num">01 Research</span><h3>Ask better questions.</h3><p>Experiments, benchmarks, learner studies and evaluation.</p></article><article><span class="num">02 Engineering</span><h3>Make the system work.</h3><p>Tutor systems, MCP services, schemas, testing and tooling.</p></article><article><span class="num">03 Pedagogy</span><h3>Make learning better.</h3><p>Activities, curriculum, rubrics and learner centred design.</p></article></div></section></main><footer><div><a class="brand light" href="./index.html"><span class="mark">M</span><span>Modern <i>English</i></span></a><p>Adaptive English learning and open research.</p></div><div class="footlinks"><a href="./platform.html">Platform</a><a href="./learner.html">Tutor</a><a href="./capabilities.html">Capabilities</a><a href="./architecture.html">Architecture</a><a href="./research.html">Research</a><a href="./docs.html">Docs</a><a href="./signup.html">Sign up / Log in</a></div><div class="copyright">© 2026 Modern English · Open research project</div></footer><script src="./assets/auth.js" defer></script><script>document.getElementById('joinForm').addEventListener('submit',async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget));const text=['Hello Dr. Mudasir Rahman,','','I would like to contribute to Modern English.','Name: '+d.name,'Email: '+d.email,'Role or affiliation: '+d.role,'Country or region: '+d.country,'Contribution area: '+d.area,'Profile: '+d.profile,'','What interests me: '+d.interest,'','How I can contribute: '+d.contribution].join('\n');try{await navigator.clipboard.writeText(text);document.getElementById('doneText').textContent='The introduction was copied to your clipboard. You can send it through GitHub or another channel.'}catch(_){document.getElementById('doneText').textContent=text}document.getElementById('done').hidden=false;});</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Join the Modern English community and contribute to adaptive English learning, research, MCP and open-source development.">
+<title>Join the Community | Modern English</title>
+<link rel="stylesheet" href="./assets/tokens.css">
+<link rel="stylesheet" href="./assets/site.css">
+<link rel="stylesheet" href="./assets/ux.css">
+<style>
+.join-page{max-width:1180px;margin:auto}.join-hero{display:grid;grid-template-columns:1.08fr .72fr;gap:48px;align-items:center}.join-box{background:#111318;color:#fff;border-radius:var(--radius-panel);padding:32px;box-shadow:var(--shadow-card)}.join-box h2{color:#fff;font-size:34px}.join-box p{color:#c9ccd2}.project-lead{display:flex;align-items:center;gap:16px;margin:20px 0}.project-lead img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #fff}.project-lead-name{font-weight:900;font-size:18px}.project-lead-role{color:#aeb2ba;font-size:13px;line-height:1.5}.join-intro{max-width:760px}.contribution-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}.contribution-card{padding:26px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-card);min-height:220px}.contribution-card .num{font-size:11px;color:var(--red2);font-weight:900;letter-spacing:.13em}.contribution-card h3{margin:20px 0 10px;font-size:24px}.contribution-card p{color:#555b65;line-height:1.65;font-size:14px}.contribution-card a{font-size:13px;font-weight:800}.form-panel{max-width:900px;margin:auto}.field-help{display:block;color:#737984;font-size:12px;margin-top:6px}.required-note{font-size:12px;color:#666;margin-bottom:18px}.privacy-note{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;margin-top:18px;background:#f7f8fa;border:1px solid var(--line);border-radius:12px;color:#555b65;font-size:12px;line-height:1.6}.privacy-note strong{color:#292d35}.done-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}.step{padding:22px;border-left:3px solid var(--red);background:#f8f8f9;border-radius:0 14px 14px 0}.step strong{display:block;margin-bottom:7px}.step span{font-size:13px;color:#60656e;line-height:1.55}@media(max-width:850px){.join-hero{grid-template-columns:1fr}.contribution-grid,.steps{grid-template-columns:1fr 1fr}}@media(max-width:600px){.contribution-grid,.steps{grid-template-columns:1fr}.join-box{padding:24px}}
+</style>
+</head>
+<body>
+<header class="nav">
+<a class="brand" href="./index.html"><span class="mark">M</span><span>Modern <i>English</i></span></a>
+<nav class="desktop-nav"></nav>
+<div class="nav-actions"><a class="nav-cta" href="./login.html">Log in →</a></div>
+</header>
+<main class="join-page">
+<section class="hero">
+<div class="join-hero">
+<div class="join-intro">
+<div class="eyebrow"><span class="status-dot"></span> Open community · research · engineering</div>
+<h1>Build the future of English learning <em>with us.</em></h1>
+<p class="lead">Modern English connects educators, researchers, developers and language specialists around an open platform for adaptive English learning, assessment and research.</p>
+<div class="actions"><a class="btn primary" href="#join">Join the project →</a><a class="btn" href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">Explore GitHub</a></div>
+</div>
+<aside class="join-box">
+<div class="eyebrow">Project lead</div>
+<div class="project-lead"><img src="https://github.com/Drmudasirrahman.png?size=240" alt="Dr. Mudasir Rahman, project lead" loading="lazy"><div><div class="project-lead-name">Dr. Mudasir Rahman</div><div class="project-lead-role">Research, learning systems<br>and technical development</div></div></div>
+<p>Community contributions can support pedagogy, learner research, adaptive tutoring, MCP services, software engineering, evaluation and documentation.</p>
+<a class="btn btn--white" href="https://github.com/Drmudasirrahman">Connect on GitHub →</a>
+</aside>
+</div>
+</section>
+
+<section class="section">
+<div class="section-heading"><div class="eyebrow">Ways to contribute</div><h2>Choose a contribution path.</h2><p class="lead">You do not need to contribute code. Research, teaching expertise, evaluation, documentation and product feedback are all useful.</p></div>
+<div class="contribution-grid">
+<article class="contribution-card"><span class="num">01 · RESEARCH</span><h3>Research & evaluation</h3><p>Design learner studies, benchmarks, assessment tasks, evidence reviews and evaluation protocols.</p><a href="#join">I want to research →</a></article>
+<article class="contribution-card"><span class="num">02 · ENGINEERING</span><h3>Software & AI</h3><p>Improve the web platform, adaptive tutor, MCP integrations, data flows, testing and developer tooling.</p><a href="#join">I want to build →</a></article>
+<article class="contribution-card"><span class="num">03 · PEDAGOGY</span><h3>English teaching</h3><p>Create activities, rubrics, curriculum ideas and learner-centred practices grounded in language education.</p><a href="#join">I want to teach →</a></article>
+<article class="contribution-card"><span class="num">04 · NLP</span><h3>Language technology</h3><p>Contribute NLP, LLM, RAG, evaluation, prompt design and language-data expertise.</p><a href="#join">I want to work on NLP →</a></article>
+<article class="contribution-card"><span class="num">05 · MCP</span><h3>Agents & services</h3><p>Help define capabilities, tool contracts, agent workflows and reliable learning-service integrations.</p><a href="#join">I want to work on MCP →</a></article>
+<article class="contribution-card"><span class="num">06 · COMMUNITY</span><h3>Docs & outreach</h3><p>Improve documentation, examples, onboarding, accessibility, issue triage and community communication.</p><a href="#join">I want to help →</a></article>
+</div>
+</section>
+
+<section class="section" id="join">
+<div class="card form-panel">
+<div class="eyebrow">Join Modern English</div><h2>Tell us what you want to build.</h2>
+<p class="muted">Complete the short form below. Your introduction is prepared locally in your browser; it is not submitted automatically.</p>
+<p class="required-note">Fields marked * are required.</p>
+<form id="joinForm" novalidate>
+<div class="fields">
+<div class="field"><label for="name">Name *</label><input id="name" required name="name" autocomplete="name" placeholder="Your name"></div>
+<div class="field"><label for="email">Email *</label><input id="email" required type="email" name="email" autocomplete="email" placeholder="you@example.com"></div>
+<div class="field"><label for="role">Role or affiliation</label><input id="role" name="role" placeholder="Researcher, educator, developer"></div>
+<div class="field"><label for="country">Country or region</label><input id="country" name="country" placeholder="Optional"></div>
+<div class="field full"><label for="area">Primary contribution area *</label><select id="area" required name="area"><option value="">Choose one</option><option>AI, ML and NLP</option><option>Software engineering</option><option>English language teaching</option><option>Learning science and assessment</option><option>RAG and knowledge systems</option><option>MCP and agent systems</option><option>Adaptive tutoring</option><option>Research and open science</option><option>Documentation and community</option><option>Other</option></select></div>
+<div class="field full"><label for="profile">GitHub, profile or portfolio</label><input id="profile" type="url" name="profile" placeholder="https://"><span class="field-help">Optional, but useful if you want collaborators to see your work.</span></div>
+<div class="field full"><label for="interest">What interests you? *</label><textarea id="interest" required name="interest" placeholder="Which part of Modern English interests you, and why?"></textarea></div>
+<div class="field full"><label for="contribution">How can you contribute? *</label><textarea id="contribution" required name="contribution" placeholder="Describe a skill, idea, experiment, feature, dataset, lesson or other contribution."></textarea></div>
+</div>
+<div class="actions"><button class="btn primary" type="submit">Prepare introduction →</button><a class="btn" href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">Open repository</a></div>
+<div class="privacy-note"><span aria-hidden="true">🔒</span><span><strong>Local-first form.</strong> The form does not send your details to a server. It creates a message in your browser that you can review before sharing.</span></div>
+</form>
+<div id="done" class="card card--dark" hidden aria-live="polite"><div class="eyebrow">Ready to share</div><h3>Your introduction is prepared.</h3><p id="doneText"></p><div class="done-actions"><button id="copyAgain" class="btn btn--white" type="button">Copy again</button><a class="btn btn--white" href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">Open GitHub →</a></div></div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-heading"><div class="eyebrow">Contribution flow</div><h2>From idea to contribution.</h2></div>
+<div class="steps">
+<div class="step"><strong>01 · Introduce yourself</strong><span>Tell the community what you know, what interests you and what you would like to explore.</span></div>
+<div class="step"><strong>02 · Explore the repository</strong><span>Review the platform, learner experience, architecture and existing issues before proposing changes.</span></div>
+<div class="step"><strong>03 · Collaborate openly</strong><span>Turn an idea into an issue, discussion, experiment or pull request and document what changed.</span></div>
+</div>
+</section>
+</main>
+<footer><div><a class="brand light" href="./index.html"><span class="mark">M</span><span>Modern <i>English</i></span></a><p>Adaptive English learning and open research.</p></div><div class="footlinks"><a href="./platform.html">Platform</a><a href="./learner.html">Tutor</a><a href="./dashboard.html">Dashboard</a><a href="./capabilities.html">Capabilities</a><a href="./architecture.html">Architecture</a><a href="./research.html">Research</a><a href="./docs.html">Docs</a><a href="./join.html">Community</a></div><div class="copyright">© 2026 Modern English · Open research project</div></footer>
+<script src="./assets/auth.js" defer></script>
+<script>
+(function(){
+ const form=document.getElementById('joinForm'),done=document.getElementById('done'),doneText=document.getElementById('doneText'),copyAgain=document.getElementById('copyAgain');
+ let prepared='';
+ function build(d){return ['Hello Dr. Mudasir Rahman,','','I would like to contribute to Modern English.','Name: '+d.name,'Email: '+d.email,'Role or affiliation: '+(d.role||'Not specified'),'Country or region: '+(d.country||'Not specified'),'Contribution area: '+d.area,'Profile: '+(d.profile||'Not provided'),'','What interests me: '+d.interest,'','How I can contribute: '+d.contribution].join('\n')}
+ async function copy(){try{await navigator.clipboard.writeText(prepared);doneText.textContent='Your introduction was copied to your clipboard. Review it and send it through GitHub or another channel.'}catch(_){doneText.textContent=prepared}}
+ form.addEventListener('submit',async e=>{e.preventDefault();if(!form.checkValidity()){form.reportValidity();return}const d=Object.fromEntries(new FormData(form));prepared=build(d);done.hidden=false;await copy();done.scrollIntoView({behavior:'smooth',block:'center'})});
+ copyAgain.addEventListener('click',copy);
+})();
+</script>
+</body>
+</html>
