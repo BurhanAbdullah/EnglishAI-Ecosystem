@@ -1,0 +1,13 @@
+name: CI refresh trigger
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Fresh CI workflow dispatch trigger for main"
