@@ -1,26 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
 :root{
-  --color-bg:#fff;--color-surface:#fff;--color-bg-dark:#101114;--color-surface-dark:#181a1f;
-  --color-text:#111318;--color-text-primary:#17191e;--color-text-muted:#555a64;--color-text-soft:#727782;--color-text-inverse:#fff;
-  --color-border:#dfe2e7;--color-border-strong:#cbd0d8;--color-accent:#c81e1e;--color-accent-strong:#a91414;--color-accent-soft:#fff3f3;
-  --color-shadow:rgba(15,23,42,.08);
-  --shadow-card:0 20px 60px var(--color-shadow);--shadow-soft:0 10px 35px rgba(15,23,42,.05);--shadow-nav:0 10px 40px rgba(0,0,0,.055);
-  --radius-sm:10px;--radius-btn:11px;--radius-card:18px;--radius-panel:24px;--radius-pill:999px;
-  --font-body:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --font-heading:var(--font-body);--font-label:var(--font-body);
-  --font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-  --text-xs:12px;--text-sm:14px;--text-base:16px;--text-lg:20px;
-  --text-xl:clamp(24px,2.2vw,30px);--text-2xl:clamp(30px,3.2vw,40px);--text-3xl:clamp(36px,4.2vw,54px);--text-4xl:clamp(46px,6.4vw,82px);
-  --leading-tight:1.08;--leading-heading:1.15;--leading-body:1.7;--leading-relaxed:1.75;
-  --weight-regular:400;--weight-medium:600;--weight-bold:700;--weight-heading:800;--weight-display:900;
-  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;--space-24:96px;
-  --space-hero:clamp(72px,9vw,112px);--content-width:1180px;--ease:cubic-bezier(.22,.61,.36,1);--motion-fast:160ms;--motion-base:220ms;--motion-slow:320ms;
-  /* Backward-compatible aliases: keep legacy selectors on the same source of truth. */
-  --bg:var(--color-bg);--surface:var(--color-surface);--ink:var(--color-text);--muted:var(--color-text-muted);--line:var(--color-border);
-  --red:var(--color-accent);--red2:var(--color-accent-strong);--red-soft:var(--color-accent-soft);--dark:var(--color-bg-dark);--dark2:var(--color-surface-dark);--white:var(--color-text-inverse);--shadow:var(--shadow-card);
+--color-bg:#f6f7fb;--color-surface:#ffffff;--color-bg-dark:#0b1020;--color-surface-dark:#121a30;
+--color-text:#101426;--color-text-primary:#171b2e;--color-text-muted:#5d6478;--color-text-soft:#858da1;--color-text-inverse:#fff;
+--color-border:#e5e8f0;--color-border-strong:#d5dae5;--color-accent:#5b5ce2;--color-accent-strong:#4647c8;--color-accent-soft:#eef0ff;
+--color-shadow:rgba(32,38,72,.10);--shadow-card:0 18px 55px var(--color-shadow);--shadow-soft:0 10px 30px rgba(32,38,72,.07);--shadow-nav:0 12px 38px rgba(32,38,72,.10);
+--radius-sm:12px;--radius-btn:12px;--radius-card:22px;--radius-panel:30px;--radius-pill:999px;
+--font-body:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-heading:var(--font-body);--font-label:var(--font-body);--font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+--text-xs:12px;--text-sm:14px;--text-base:16px;--text-lg:20px;--text-xl:clamp(24px,2.2vw,30px);--text-2xl:clamp(28px,3vw,38px);--text-3xl:clamp(36px,4.2vw,56px);--text-4xl:clamp(48px,6.6vw,86px);
+--leading-tight:1.08;--leading-heading:1.15;--leading-body:1.7;--leading-relaxed:1.75;--weight-regular:400;--weight-medium:600;--weight-bold:700;--weight-heading:800;--weight-display:900;
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;--space-24:96px;--space-hero:clamp(72px,9vw,112px);--content-width:1200px;--ease:cubic-bezier(.22,.61,.36,1);--motion-fast:160ms;--motion-base:220ms;--motion-slow:320ms;
+--bg:var(--color-bg);--surface:var(--color-surface);--ink:var(--color-text);--muted:var(--color-text-muted);--line:var(--color-border);--red:var(--color-accent);--red2:var(--color-accent-strong);--red-soft:var(--color-accent-soft);--dark:var(--color-bg-dark);--dark2:var(--color-surface-dark);--white:var(--color-text-inverse);--shadow:var(--shadow-card);
 }
-html{font-family:var(--font-body);font-synthesis:none}
-body{font-family:var(--font-body);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
-h1,h2,h3,h4,h5,h6,.brand,.btn,.nav-cta,.eyebrow,.field label,.quizmeta{font-family:var(--font-heading);font-synthesis:none}
-input,select,textarea,button{font-family:var(--font-body)}
+html{font-family:var(--font-body);font-synthesis:none}body{font-family:var(--font-body);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}h1,h2,h3,h4,h5,h6,.brand,.btn,.nav-cta,.eyebrow,.field label,.quizmeta{font-family:var(--font-heading);font-synthesis:none}input,select,textarea,button{font-family:var(--font-body)}
