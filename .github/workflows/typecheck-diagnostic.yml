@@ -12,8 +12,11 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund
       - run: npx tsc --noEmit --pretty false > typecheck.log 2>&1 || true
-      - run: cat typecheck.log
+      - run: npm run verify:mcp-gateway > gateway.log 2>&1 || true
+      - run: cat typecheck.log; cat gateway.log
       - uses: actions/upload-artifact@v4
         with:
-          name: typecheck-log
-          path: typecheck.log
+          name: validation-logs
+          path: |
+            typecheck.log
+            gateway.log
