@@ -3,10 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Modern English — adaptive English learning, specialist AI agents, and open research.">
+<meta name="description" content="Modern English — adaptive English learning, specialist AI agents, and open research infrastructure.">
 <meta name="theme-color" content="#050505">
 <title>Modern English — Learn. Adapt. Advance.</title>
 <link rel="stylesheet" href="./assets/site.css">
+<style>
+/* Homepage interaction layer: keeps the shared site system intact while adding the live adaptive simulator. */
+.loop-simulator{display:grid;grid-template-columns:.82fr 1.18fr;gap:16px;margin-top:28px}.loop-steps{display:grid;gap:8px}.loop-step{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:12px;padding:16px;border:1px solid #e4e4e8;background:#fff;border-radius:14px;text-align:left;cursor:pointer;transition:.28s var(--ease)}.loop-step:hover,.loop-step.is-active{border-color:rgba(225,6,0,.35);transform:translateX(3px);box-shadow:0 12px 30px rgba(0,0,0,.06)}.loop-step.is-active{background:#fff8f7}.loop-step .step-index{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:#f2f2f4;color:#555;font-size:10px;font-weight:900}.loop-step.is-active .step-index{background:var(--red);color:#fff}.loop-step strong{display:block;font-size:13px}.loop-step small{display:block;color:#777;font-size:11px;margin-top:2px}.loop-step .step-arrow{color:#aaa}.loop-stage{min-height:100%;padding:34px;border-radius:20px;background:#09090a;color:#fff;border:1px solid #262629;position:relative;overflow:hidden}.loop-stage:before{content:"";position:absolute;width:320px;height:320px;right:-140px;top:-150px;border-radius:50%;background:rgba(225,6,0,.24);filter:blur(60px)}.loop-stage>*{position:relative;z-index:1}.loop-stage-top{display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:.14em;font-weight:900;color:#aaa}.loop-status{color:#ff514b}.loop-core{width:150px;height:150px;margin:52px auto 38px;border-radius:50%;display:grid;place-items:center;text-align:center;background:radial-gradient(circle,#242428,#0e0e10);border:1px solid #3a3a3e;box-shadow:0 0 80px rgba(225,6,0,.2);transition:.35s var(--ease)}.loop-core strong{font-size:18px;letter-spacing:-.04em}.loop-core small{display:block;color:#aaa;font-size:9px;letter-spacing:.15em;margin-top:4px}.loop-stage h3{font-size:27px;margin:0 0 9px;letter-spacing:-.05em}.loop-stage p{margin:0;color:#aaa;font-size:13px;max-width:560px}.loop-signal{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px}.loop-signal span{padding:7px 9px;border:1px solid #29292d;border-radius:999px;color:#bbb;font-size:9px;font-weight:800;letter-spacing:.08em}.home-project-note{margin-top:18px;color:#777;font-size:11px}.home-project-note a{color:var(--red);font-weight:800}.footer-lead{margin-top:14px;color:#888;font-size:11px}.footer-lead a{color:#fff;font-weight:800}.mobile-menu .mobile-primary{margin-top:8px}.search-dialog{z-index:2000}@media(max-width:850px){.loop-simulator{grid-template-columns:1fr}.loop-stage{min-height:430px}.loop-core{margin:42px auto 32px}}@media(max-width:560px){.loop-step{grid-template-columns:36px 1fr auto;padding:13px}.loop-stage{padding:24px}.loop-stage h3{font-size:23px}}
+</style>
 </head>
 <body class="home-page">
 <div class="ambient-cursor" aria-hidden="true"></div>
@@ -38,9 +42,11 @@
     <a href="./index.html">Home <span>↗</span></a>
     <a href="./learner.html">Adaptive Tutor <span>↗</span></a>
     <a href="./capabilities.html">Capabilities <span>↗</span></a>
+    <a href="./architecture.html">Architecture <span>↗</span></a>
     <a href="./research.html">Research <span>↗</span></a>
+    <a href="./docs.html">Docs <span>↗</span></a>
     <a href="./join.html">Community <span>↗</span></a>
-    <a href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">GitHub <span>↗</span></a>
+    <a href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem" target="_blank" rel="noopener">GitHub <span>↗</span></a>
     <a class="mobile-primary" href="./learner.html">Get Started <span>→</span></a>
   </div>
 </div>
@@ -73,7 +79,7 @@
       <div class="core"><span class="core-mark">M</span><small>LEARN</small></div>
       <div class="orbit-label label-profile">PROFILE <i>01</i></div>
       <div class="orbit-label label-diagnose">DIAGNOSE <i>02</i></div>
-      <div class="orbit-label label-practise">PRACTISE <i>03</i></div>
+      <div class="orbit-label label-practise">PRACTICE <i>03</i></div>
       <div class="orbit-label label-adapt">ADAPT <i>04</i></div>
     </div>
     <div class="panel-footer"><span>Every answer is evidence.</span><strong>The next step responds.</strong></div>
@@ -89,11 +95,23 @@
 
 <section class="section compact" id="experience">
   <div class="section-heading reveal"><div class="eyebrow">THE EXPERIENCE</div><h2>One learner.<br><em>One evolving path.</em></h2><p class="lead">No fixed lesson plan. No one-size-fits-all sequence. Your performance continuously informs the next activity.</p></div>
-  <div class="grid three experience-grid">
-    <article class="reveal"><span class="num">01 · PROFILE</span><h3>Start with context.</h3><p>Set your level, goals and target skill so the tutor begins with meaningful learner context.</p><span class="card-arrow">↗</span></article>
-    <article class="reveal delay-1"><span class="num">02 · DIAGNOSE</span><h3>Discover what comes next.</h3><p>A focused diagnostic turns performance into evidence about strengths, gaps and challenge.</p><span class="card-arrow">↗</span></article>
-    <article class="reveal delay-2"><span class="num">03 · ADAPT</span><h3>Let the system respond.</h3><p>Difficulty, feedback and practice direction change as your demonstrated skill changes.</p><span class="card-arrow">↗</span></article>
+  <div class="loop-simulator reveal" id="adaptive-loop" aria-label="Interactive adaptive learning loop">
+    <div class="loop-steps" role="tablist" aria-label="Adaptive learning stages">
+      <button class="loop-step is-active" type="button" role="tab" aria-selected="true" data-step="0"><span class="step-index">01</span><span><strong>Profile</strong><small>Start with learner context</small></span><span class="step-arrow">→</span></button>
+      <button class="loop-step" type="button" role="tab" aria-selected="false" data-step="1"><span class="step-index">02</span><span><strong>Diagnose</strong><small>Find the next skill gap</small></span><span class="step-arrow">→</span></button>
+      <button class="loop-step" type="button" role="tab" aria-selected="false" data-step="2"><span class="step-index">03</span><span><strong>Practice</strong><small>Target the demonstrated need</small></span><span class="step-arrow">→</span></button>
+      <button class="loop-step" type="button" role="tab" aria-selected="false" data-step="3"><span class="step-index">04</span><span><strong>Feedback</strong><small>Turn attempts into evidence</small></span><span class="step-arrow">→</span></button>
+      <button class="loop-step" type="button" role="tab" aria-selected="false" data-step="4"><span class="step-index">05</span><span><strong>Adapt</strong><small>Choose the next challenge</small></span><span class="step-arrow">↻</span></button>
+    </div>
+    <div class="loop-stage" aria-live="polite">
+      <div class="loop-stage-top"><span>ADAPTIVE LOOP</span><span class="loop-status">● LIVE MODEL</span></div>
+      <div class="loop-core"><div><strong id="loop-core-title">PROFILE</strong><small id="loop-core-subtitle">LEARNER CONTEXT</small></div></div>
+      <h3 id="loop-title">Start with context.</h3>
+      <p id="loop-copy">Set your level, goals, target skill and preferences. This becomes explicit context for the tutor before the first diagnostic.</p>
+      <div class="loop-signal" id="loop-signals"><span>LEVEL</span><span>GOAL</span><span>SKILL</span><span>PREFERENCES</span></div>
+    </div>
   </div>
+  <div class="actions reveal"><a class="btn primary" href="./learner.html">Start your profile <span>→</span></a><a class="btn" href="./architecture.html">Inspect the architecture <span>↗</span></a></div>
 </section>
 
 <section class="section tinted tinted--premium">
@@ -111,48 +129,68 @@
 
 <section class="section compact split-section">
   <div class="split split--premium">
-    <div class="card card--dark reveal"><div class="eyebrow">PROJECT LEAD</div><h2>Dr. Mudasir Rahman</h2><p>Leading Modern English across research, technical development and open-source collaboration.</p><a class="btn btn--white" href="https://github.com/Drmudasirrahman">Connect on GitHub <span>↗</span></a></div>
+    <div class="card card--dark reveal"><div class="eyebrow">PROJECT LEAD</div><h2>Dr. Mudasir Rahman</h2><p>Leading Modern English across research, technical development and open-source collaboration.</p><a class="btn btn--white" href="https://github.com/Drmudasirrahman" target="_blank" rel="noopener">Connect on GitHub <span>↗</span></a></div>
     <div class="card card--accent reveal delay-1"><div class="eyebrow">OPEN COMMUNITY</div><h2>Build the next lesson.</h2><p>Researchers, educators, language specialists, AI engineers and open-source contributors are welcome.</p><a class="btn primary" href="./join.html">Join Modern English <span>→</span></a></div>
   </div>
 </section>
 </main>
 
-<footer class="footer--premium"><div><a class="brand light" href="./index.html"><span class="mark">M</span><span>Modern <i>English</i></span></a><p>Adaptive English learning and open research.</p></div><div class="footlinks"><a href="./learner.html">Tutor</a><a href="./capabilities.html">Capabilities</a><a href="./research.html">Research</a><a href="./join.html">Community</a><a href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem">Repository</a></div><div class="copyright">© 2026 Modern English · Open research project</div></footer>
+<footer class="footer--premium">
+  <div><a class="brand light" href="./index.html"><span class="mark">M</span><span>Modern <i>English</i></span></a><p>Adaptive English learning and open research.</p><p class="footer-lead">Project Lead: <a href="https://github.com/Drmudasirrahman" target="_blank" rel="noopener">Dr. Mudasir Rahman</a></p></div>
+  <div class="footlinks"><a href="./learner.html">Tutor</a><a href="./capabilities.html">Capabilities</a><a href="./architecture.html">Architecture</a><a href="./research.html">Research</a><a href="./docs.html">Docs</a><a href="./join.html">Community</a><a href="https://github.com/BurhanAbdullah/EnglishAI-Ecosystem" target="_blank" rel="noopener">Repository</a></div>
+  <div class="copyright">© 2026 Modern English · Open research project · EnglishAI Ecosystem</div>
+</footer>
 
 <script>
 (() => {
-  const body = document.body;
-  const nav = document.getElementById('site-nav');
-  const menu = document.getElementById('mobile-menu');
-  const toggle = document.querySelector('.menu-toggle');
-  const close = document.querySelector('.mobile-close');
-  const drawerTrigger = document.querySelector('.nav-trigger');
-  const drawer = document.getElementById('learn-menu');
-  const dialog = document.getElementById('search-dialog');
-  const searchTrigger = document.querySelector('.search-trigger');
-  const search = document.getElementById('site-search');
-  const results = document.getElementById('search-results');
-  const pages = [
+  const body=document.body;
+  const nav=document.getElementById('site-nav');
+  const menu=document.getElementById('mobile-menu');
+  const toggle=document.querySelector('.menu-toggle');
+  const close=document.querySelector('.mobile-close');
+  const drawerTrigger=document.querySelector('.nav-trigger');
+  const drawer=document.getElementById('learn-menu');
+  const dialog=document.getElementById('search-dialog');
+  const searchTrigger=document.querySelector('.search-trigger');
+  const search=document.getElementById('site-search');
+  const results=document.getElementById('search-results');
+  const pages=[
     ['Adaptive Tutor','Build your learner profile and start learning.','./learner.html'],
     ['Capabilities','Explore the six specialist agent capabilities.','./capabilities.html'],
     ['Architecture','Understand the Modern English learning loop.','./architecture.html'],
     ['Research','Read the open research direction.','./research.html'],
+    ['Docs','Read project documentation.','./docs.html'],
     ['Community','Join the Modern English community.','./join.html']
   ];
-  const setMenu = (open) => { menu.classList.toggle('is-open', open); toggle?.setAttribute('aria-expanded', String(open)); menu.setAttribute('aria-hidden', String(!open)); body.classList.toggle('menu-open', open); };
-  toggle?.addEventListener('click', () => setMenu(!menu.classList.contains('is-open')));
-  close?.addEventListener('click', () => setMenu(false));
-  menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
-  drawerTrigger?.addEventListener('click', () => { const open = drawerTrigger.getAttribute('aria-expanded') === 'true'; drawerTrigger.setAttribute('aria-expanded', String(!open)); drawer.classList.toggle('is-open', !open); });
-  document.addEventListener('click', e => { if (!e.target.closest('.nav-menu')) { drawer?.classList.remove('is-open'); drawerTrigger?.setAttribute('aria-expanded','false'); } });
-  searchTrigger?.addEventListener('click', () => { dialog?.showModal(); setTimeout(() => search?.focus(), 80); });
-  search?.addEventListener('input', () => { const q = search.value.trim().toLowerCase(); if (!q) { results.innerHTML = '<p>Try “tutor”, “research”, or “community”.</p>'; return; } const matches = pages.filter(([t,d]) => `${t} ${d}`.toLowerCase().includes(q)); results.innerHTML = matches.length ? matches.map(([t,d,u]) => `<a href="${u}"><strong>${t}</strong><small>${d}</small><span>↗</span></a>`).join('') : '<p>No matching page yet. Try another search.</p>'; });
-  if (results) results.innerHTML = '<p>Try “tutor”, “research”, or “community”.</p>';
-  const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }), { threshold: .12, rootMargin: '0px 0px -30px' });
-  document.querySelectorAll('.reveal').forEach(el => { el.classList.remove('reveal'); el.classList.add('scroll-reveal'); observer.observe(el); });
-  const onScroll = () => nav?.classList.toggle('nav-scrolled', window.scrollY > 12); window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
-  const cursor = document.querySelector('.ambient-cursor'); window.addEventListener('pointermove', e => { if (cursor && matchMedia('(pointer:fine)').matches) { cursor.style.transform = `translate3d(${e.clientX - 140}px,${e.clientY - 140}px,0)`; } }, {passive:true});
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { setMenu(false); drawer?.classList.remove('is-open'); if (dialog?.open) dialog.close(); } if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); dialog?.showModal(); setTimeout(() => search?.focus(), 80); } });
+  const loop=[
+    ['PROFILE','LEARNER CONTEXT','Start with context.','Set your level, goals, target skill and preferences. This becomes explicit context for the tutor before the first diagnostic.',['LEVEL','GOAL','SKILL','PREFERENCES']],
+    ['DIAGNOSE','SKILL EVIDENCE','Discover what comes next.','A focused diagnostic samples performance and helps identify where the learner needs support or more challenge.',['QUESTIONS','ACCURACY','MASTERY','GAPS']],
+    ['PRACTICE','TARGETED ACTION','Practice the right thing.','The next activity is shaped around the demonstrated skill level rather than a fixed lesson sequence.',['SKILL','DIFFICULTY','RETRY','FOCUS']],
+    ['FEEDBACK','PERFORMANCE SIGNAL','Learn from every attempt.','Responses become structured signals for explanation, retry, assessment and future tutoring decisions.',['ANSWER','ERRORS','CONFIDENCE','EVIDENCE']],
+    ['ADAPT','NEXT DECISION','Change what happens next.','Strong performance can increase challenge; repeated errors can trigger explanation, targeted practice and another attempt.',['MASTERY','ACCURACY','DIFFICULTY','NEXT STEP']]
+  ];
+  const setMenu=open=>{menu?.classList.toggle('is-open',open);toggle?.setAttribute('aria-expanded',String(open));menu?.setAttribute('aria-hidden',String(!open));body.classList.toggle('menu-open',open);};
+  toggle?.addEventListener('click',()=>setMenu(!menu.classList.contains('is-open')));
+  close?.addEventListener('click',()=>setMenu(false));
+  menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+  drawerTrigger?.addEventListener('click',()=>{const open=drawerTrigger.getAttribute('aria-expanded')==='true';drawerTrigger.setAttribute('aria-expanded',String(!open));drawer?.classList.toggle('is-open',!open);});
+  document.addEventListener('click',e=>{if(!e.target.closest('.nav-menu')){drawer?.classList.remove('is-open');drawerTrigger?.setAttribute('aria-expanded','false');}});
+  searchTrigger?.addEventListener('click',()=>{dialog?.showModal();setTimeout(()=>search?.focus(),80);});
+  search?.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();if(!q){results.innerHTML='<p>Try “tutor”, “research”, “architecture”, or “community”.</p>';return;}const matches=pages.filter(([t,d])=>`${t} ${d}`.toLowerCase().includes(q));results.innerHTML=matches.length?matches.map(([t,d,u])=>`<a href="${u}"><strong>${t}</strong><small>${d}</small><span>↗</span></a>`).join(''):'<p>No matching page yet. Try another search.</p>';});
+  if(results)results.innerHTML='<p>Try “tutor”, “research”, “architecture”, or “community”.</p>';
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}),{threshold:.12,rootMargin:'0px 0px -30px'});
+  document.querySelectorAll('.reveal').forEach(el=>{el.classList.remove('reveal');el.classList.add('scroll-reveal');observer.observe(el);});
+  const onScroll=()=>nav?.classList.toggle('nav-scrolled',window.scrollY>12);window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  const cursor=document.querySelector('.ambient-cursor');window.addEventListener('pointermove',e=>{if(cursor&&matchMedia('(pointer:fine)').matches)cursor.style.transform=`translate3d(${e.clientX-140}px,${e.clientY-140}px,0)`;},{passive:true});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){setMenu(false);drawer?.classList.remove('is-open');drawerTrigger?.setAttribute('aria-expanded','false');if(dialog?.open)dialog.close();}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();dialog?.showModal();setTimeout(()=>search?.focus(),80);}});
+  const steps=[...document.querySelectorAll('.loop-step')];
+  const coreTitle=document.getElementById('loop-core-title'),coreSubtitle=document.getElementById('loop-core-subtitle'),loopTitle=document.getElementById('loop-title'),loopCopy=document.getElementById('loop-copy'),signals=document.getElementById('loop-signals');
+  let active=0, timer;
+  const renderLoop=i=>{active=i;const item=loop[i];steps.forEach((s,n)=>{const selected=n===i;s.classList.toggle('is-active',selected);s.setAttribute('aria-selected',String(selected));});if(coreTitle)coreTitle.textContent=item[0];if(coreSubtitle)coreSubtitle.textContent=item[1];if(loopTitle)loopTitle.textContent=item[2];if(loopCopy)loopCopy.textContent=item[3];if(signals)signals.innerHTML=item[4].map(x=>`<span>${x}</span>`).join('');};
+  const startLoop=()=>{clearInterval(timer);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)timer=setInterval(()=>renderLoop((active+1)%loop.length),3600);};
+  steps.forEach((step,i)=>step.addEventListener('click',()=>{renderLoop(i);startLoop();}));
+  renderLoop(0);startLoop();
+  window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change',startLoop);
 })();
 </script>
 </body>
