@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 const root = new URL('../docs/', import.meta.url).pathname;
 const pages = readdirSync(root).filter((name) => name.endsWith('.html'));
-const required = ['index.html', 'platform.html', 'capabilities.html', 'architecture.html', 'research.html', 'docs.html', 'tutor.html', 'learner.html', 'join.html'];
+const required = ['index.html', 'platform.html', 'capabilities.html', 'architecture.html', 'research.html', 'docs.html', 'signup.html', 'learner.html', 'join.html'];
 
 const failures = [];
 for (const page of required) {
