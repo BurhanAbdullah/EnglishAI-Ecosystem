@@ -6,7 +6,13 @@ import { randomUUID } from 'node:crypto';
 import * as z from 'zod/v4';
 
 const PORT = Number(process.env.PORT ?? 8787);
-const ALLOWED_ORIGIN = process.env.WEB_ORIGIN ?? 'https://englishai-ecosystem-live.onrender.com';
+const DEFAULT_WEB_ORIGINS = [
+  'https://burhanabdullah.github.io/EnglishAI-Ecosystem',
+  'https://englishai-ecosystem-live.onrender.com'
+];
+const configuredOrigins = (process.env.WEB_ORIGINS ?? process.env.WEB_ORIGIN ?? '')
+  .split(',').map(value => value.trim()).filter(Boolean);
+const ALLOWED_ORIGINS = new Set([...DEFAULT_WEB_ORIGINS, ...configuredOrigins]);
 
 const capabilityConfig = {
   'english-content': { script: 'mcp-servers/english-content/src/index.ts', tools: ['search_content', 'fetch_source'] },
@@ -25,7 +31,7 @@ async function getClient(capability: Capability) {
   const existing = clients.get(capability);
   if (existing) return existing.client;
   const config = capabilityConfig[capability];
-  const client = new Client({ name: 'englishai-mcp-gateway', version: '1.0.0' });
+  const client = new Client({ name: 'englishai-mcp-gateway', version: '1.1.0' });
   const transport = new StdioClientTransport({ command: 'npx', args: ['tsx', config.script] });
   await client.connect(transport);
   clients.set(capability, { client, transport });
@@ -41,7 +47,7 @@ async function callCapability(capability: Capability, tool: string, args: Record
 
 function buildServer() {
   const server = new McpServer(
-    { name: 'englishai-mcp-gateway', version: '1.0.0' },
+    { name: 'englishai-mcp-gateway', version: '1.1.0' },
     { instructions: 'Use call_capability to invoke one of the approved English-learning MCP capability servers. Never invent capability names or tool names.' }
   );
 
@@ -88,11 +94,13 @@ function send(res: any, response: Response) {
 
 createServer(async (req, res) => {
   const origin = req.headers.origin;
-  if (origin && origin !== ALLOWED_ORIGIN) { res.writeHead(403); res.end('Forbidden origin'); return; }
-  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+  if (origin && !ALLOWED_ORIGINS.has(origin)) { res.writeHead(403); res.end('Forbidden origin'); return; }
+  if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
+  else res.setHeader('Access-Control-Allow-Origin', DEFAULT_WEB_ORIGINS[0]);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Headers', 'content-type, accept');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Vary', 'Origin');
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
   const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
@@ -114,7 +122,7 @@ createServer(async (req, res) => {
   const response = await handler.fetch(request);
   send(res, response);
 }).listen(PORT, '0.0.0.0', () => {
-  console.log(`EnglishAI MCP gateway listening on ${PORT}`);
+  console.log(`EnglishAI MCP gateway listening on ${PORT}; allowed origins=${[...ALLOWED_ORIGINS].join(',')}`);
 });
 
 process.on('SIGTERM', async () => {
