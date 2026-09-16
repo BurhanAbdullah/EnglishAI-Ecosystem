@@ -1,0 +1,14 @@
+/* Canonical cross-page visual contract. Loaded last by auth.js so legacy page styles cannot change the shell. */
+:root{color-scheme:light}
+html,body{background:var(--bg)!important;color:var(--ink)!important}
+body:before{background:radial-gradient(circle at 88% 0%,rgba(200,30,30,.055),transparent 25%),radial-gradient(circle at 0% 45%,rgba(200,30,30,.025),transparent 24%)!important}
+.nav{height:64px!important;padding:0 12px 0 18px!important;gap:24px!important;background:rgba(255,255,255,.94)!important;border:1px solid rgba(20,20,25,.1)!important;border-radius:var(--radius-card)!important;box-shadow:var(--shadow-nav)!important}
+.desktop-nav{gap:8px!important;margin-left:auto!important;align-items:center!important}
+.desktop-nav>a{min-height:44px!important;padding:10px 14px!important;font-size:var(--text-sm)!important;line-height:1.2!important;border-radius:var(--radius-sm)!important;white-space:nowrap!important}
+.nav-actions{display:flex!important;align-items:center!important;gap:10px!important}
+.nav-cta{min-height:44px!important;padding:0 16px!important}
+.brand{gap:10px!important;white-space:nowrap!important}
+.mark{width:34px!important;height:34px!important}
+@media(max-width:1250px){.nav{gap:18px!important}.desktop-nav{gap:5px!important}.desktop-nav>a{padding-inline:10px!important;font-size:var(--text-xs)!important}}
+@media(max-width:900px){.nav{height:64px!important}.desktop-nav{display:none!important}.nav .nav-actions{display:none!important}}
+@media(max-width:600px){.nav{width:calc(100% - 20px)!important;top:8px!important;height:60px!important;padding-inline:12px!important}}
