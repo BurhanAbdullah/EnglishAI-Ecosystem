@@ -37,6 +37,8 @@ jobs:
         run: npm run typecheck
       - name: Unit and contract tests
         run: npm test
+      - name: MCP gateway and tutor integration test
+        run: npm run verify:mcp-gateway
       - name: Website validation
         run: npm run validate:site
 
