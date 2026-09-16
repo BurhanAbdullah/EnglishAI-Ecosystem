@@ -4,6 +4,8 @@ import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import * as z from 'zod/v4';
+import { TutorEngine } from '../tutor/tutor-engine.js';
+import type { LearningAttempt } from '../tutor/types.js';
 
 const PORT = Number(process.env.PORT ?? 8787);
 const DEFAULT_WEB_ORIGINS = [
@@ -26,12 +28,13 @@ const capabilityConfig = {
 
 type Capability = keyof typeof capabilityConfig;
 const clients = new Map<Capability, { client: Client; transport: StdioClientTransport }>();
+const tutor = new TutorEngine();
 
 async function getClient(capability: Capability) {
   const existing = clients.get(capability);
   if (existing) return existing.client;
   const config = capabilityConfig[capability];
-  const client = new Client({ name: 'englishai-mcp-gateway', version: '1.1.0' });
+  const client = new Client({ name: 'englishai-mcp-gateway', version: '1.2.0' });
   const transport = new StdioClientTransport({ command: 'npx', args: ['tsx', config.script] });
   await client.connect(transport);
   clients.set(capability, { client, transport });
@@ -45,16 +48,60 @@ async function callCapability(capability: Capability, tool: string, args: Record
   return client.callTool({ name: tool, arguments: args });
 }
 
+const tutorSkill = z.enum(['grammar', 'vocabulary', 'reading', 'writing', 'speaking', 'listening']);
+const proficiency = z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2']);
+
+function learnerFromInput(input: { learnerId: string; proficiency?: string; firstLanguage?: string; targetSkill?: string; learningGoal: string }) {
+  return {
+    learnerId: input.learnerId,
+    ...(input.proficiency ? { proficiency: input.proficiency as 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' } : {}),
+    ...(input.firstLanguage ? { firstLanguage: input.firstLanguage } : {}),
+    ...(input.targetSkill ? { targetSkill: input.targetSkill as 'grammar' | 'vocabulary' | 'reading' | 'writing' | 'speaking' | 'listening' } : {}),
+    learningGoal: input.learningGoal
+  };
+}
+
+function buildTutorMessage(skill: string, action: string, name: string, userMessage: string, specialist: unknown): string {
+  const data = specialist && typeof specialist === 'object' ? specialist as { content?: Array<{ text?: string }> } : {};
+  const raw = data.content?.map(item => item.text ?? '').join(' ').trim() ?? '';
+  let detail = '';
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    if (Array.isArray(parsed.issues) && parsed.issues.length > 0) {
+      const issue = parsed.issues[0] as Record<string, unknown>;
+      detail = `${String(issue.message ?? 'I found one area to improve.')} Try this: ${String(issue.correction ?? 'rewrite the sentence and explain your choice')}.`;
+    } else if (Array.isArray(parsed.unfamiliarWords) && parsed.unfamiliarWords.length > 0) {
+      detail = `Let's work on one word at a time. Start with “${String(parsed.unfamiliarWords[0])}” and use it in a new sentence.`;
+    } else if (typeof parsed.answer === 'string') {
+      detail = parsed.answer;
+    }
+  } catch {
+    detail = '';
+  }
+
+  const prefix = name ? `${name}, ` : '';
+  const actionLead: Record<string, string> = {
+    teach: 'I’m going to slow this down and teach the idea before asking you to practise it.',
+    practice: 'Let’s practise this in a focused way and use your next answer to adjust the difficulty.',
+    review: 'Let’s consolidate what you already know and check whether it is becoming reliable.',
+    'increase-difficulty': 'You are showing strong control, so I’m raising the challenge and testing transfer.',
+    assess: 'I’ll use this as a fresh learning signal rather than just giving you the answer.',
+    diagnose: 'I’ll first identify the pattern in your response so we know what to work on next.'
+  };
+  const message = userMessage.trim();
+  return `${prefix}${actionLead[action] ?? 'Let’s work on this together.'}${detail ? ` ${detail}` : ''} ${message ? 'Now, tell me what you think the answer should be and why.' : 'Send me a sentence, question, or answer and I’ll guide you step by step.'}`;
+}
+
 function buildServer() {
   const server = new McpServer(
-    { name: 'englishai-mcp-gateway', version: '1.1.0' },
-    { instructions: 'Use call_capability to invoke one of the approved English-learning MCP capability servers. Never invent capability names or tool names.' }
+    { name: 'englishai-mcp-gateway', version: '1.2.0' },
+    { instructions: 'Use call_capability for specialist MCP work and tutor_turn for stateful one-to-one learner orchestration. Never invent capability names or tool names.' }
   );
 
   server.registerTool(
     'list_capabilities',
     { description: 'List the approved EnglishAI MCP capability servers and their exposed tools.' },
-    async () => ({ content: [{ type: 'text', text: JSON.stringify(capabilityConfig) }] })
+    async () => ({ content: [{ type: 'text', text: JSON.stringify({ ...capabilityConfig, tutor: { tools: ['tutor_turn'] } }) }] })
   );
 
   server.registerTool(
@@ -70,6 +117,47 @@ function buildServer() {
     async ({ capability, tool, arguments: args }) => {
       const result = await callCapability(capability, tool, args);
       return { content: [{ type: 'text', text: JSON.stringify(result) }] };
+    }
+  );
+
+  server.registerTool(
+    'tutor_turn',
+    {
+      description: 'Run one stateful one-to-one tutoring turn. Updates the learner model, chooses the next pedagogical action, routes to the relevant specialist MCP, and returns learner-facing guidance.',
+      inputSchema: z.object({
+        learnerId: z.string().min(1),
+        name: z.string().min(1).optional(),
+        proficiency: proficiency.optional(),
+        firstLanguage: z.string().min(2).optional(),
+        skill: tutorSkill,
+        learningGoal: z.string().min(1),
+        message: z.string().max(12000).default(''),
+        attempts: z.array(z.object({ correct: z.boolean(), difficulty: z.number().min(0).max(1), confidence: z.number().min(0).max(1).optional(), errorType: z.string().optional(), timestamp: z.string().optional() })).max(50).default([])
+      }),
+      outputSchema: z.object({ learnerId: z.string(), skill: z.string(), action: z.string(), difficulty: z.number(), rationale: z.array(z.string()), coachMessage: z.string(), agents: z.array(z.string()), specialist: z.unknown().optional() })
+    },
+    async input => {
+      const learner = learnerFromInput({ ...input, targetSkill: input.skill });
+      tutor.registerLearner(learner);
+      for (const attempt of input.attempts) {
+        const event: LearningAttempt = { learnerId: input.learnerId, skill: input.skill, ...attempt };
+        tutor.recordAttempt(event);
+      }
+      const decision = tutor.decide({ learnerId: input.learnerId, skill: input.skill, intent: 'learn' });
+
+      let specialist: unknown;
+      if (input.message.trim()) {
+        if (input.skill === 'grammar') specialist = await callCapability('grammar', 'analyze_grammar', { text: input.message, level: input.proficiency ?? 'B1' });
+        else if (input.skill === 'vocabulary') specialist = await callCapability('vocabulary', 'analyze_vocabulary', { text: input.message });
+        else if (input.skill === 'writing') specialist = await callCapability('writing', 'analyze_writing', { text: input.message, level: input.proficiency ?? 'B1', taskType: 'tutoring' });
+        else if (input.skill === 'reading') specialist = await callCapability('reading', 'explain_reading', { text: input.message, question: 'What is the learner asking about in this passage?', level: input.proficiency ?? 'B1' });
+      }
+
+      const coachMessage = buildTutorMessage(input.skill, decision.action, input.name ?? '', input.message, specialist);
+      return {
+        structuredContent: { ...decision, coachMessage, ...(specialist ? { specialist } : {}) },
+        content: [{ type: 'text', text: JSON.stringify({ ...decision, coachMessage, ...(specialist ? { specialist } : {}) }) }]
+      };
     }
   );
 
@@ -106,7 +194,7 @@ createServer(async (req, res) => {
   const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
   if (url.pathname === '/healthz') {
     res.writeHead(200, { 'content-type': 'application/json' });
-    res.end(JSON.stringify({ ok: true, service: 'englishai-mcp-gateway', capabilities: Object.keys(capabilityConfig) }));
+    res.end(JSON.stringify({ ok: true, service: 'englishai-mcp-gateway', version: '1.2.0', capabilities: Object.keys(capabilityConfig), tutor: true }));
     return;
   }
   if (url.pathname !== '/mcp') { res.writeHead(404); res.end('Not found'); return; }
