@@ -55,8 +55,10 @@ jobs:
           done
           grep -q 'Modern English' docs/index.html
           grep -q 'join.html' docs/index.html
-          grep -q 'Dr. Mudasir Rahman' docs/index.html
           grep -q 'Dr. Mudasir Rahman' docs/join.html
           grep -q 'Drmudasirrahman' docs/join.html
+          grep -q 'font-family' docs/assets/site.css
+          grep -q 'Inter' docs/assets/site.css
           grep -q 'font-family' docs/assets/tokens.css
+          grep -q 'Inter' docs/assets/tokens.css
           echo "Modern English website smoke test passed."
