@@ -7,7 +7,7 @@ import secrets
 import time
 from http import HTTPStatus
 from http.cookies import SimpleCookie
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qs
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -22,6 +22,7 @@ PUBLIC_SITE_URL = os.getenv("PUBLIC_SITE_URL", "https://burhanabdullah.github.io
 COOKIE_NAME = "modern_english_session"
 STATE_TTL = 600
 ALLOWED_ORIGINS = {AUTH_SITE_URL, PUBLIC_SITE_URL}
+ALLOWED_NEXT = {"learner.html", "profile.html", "dashboard.html"}
 
 
 def b64(value: bytes) -> str:
@@ -63,7 +64,7 @@ def configured():
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "ModernEnglishAuth/1.1"
+    server_version = "ModernEnglishAuth/1.2"
 
     def log_message(self, fmt, *args):
         print("[auth] " + (fmt % args))
@@ -128,11 +129,17 @@ class Handler(BaseHTTPRequestHandler):
         cookie.load(self.headers.get("Cookie", ""))
         return cookie
 
+    def requested_next(self):
+        query = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
+        value = query.get("next", [""])[0]
+        return value if value in ALLOWED_NEXT else "learner.html"
+
     def start_github_login(self):
         if not configured():
             self.redirect(PUBLIC_SITE_URL + "/signup.html?auth=not-configured")
             return
-        state = sign({"nonce": secrets.token_urlsafe(24), "exp": int(time.time()) + STATE_TTL})
+        next_page = self.requested_next()
+        state = sign({"nonce": secrets.token_urlsafe(24), "next": next_page, "exp": int(time.time()) + STATE_TTL})
         params = urlencode({
             "client_id": GITHUB_CLIENT_ID,
             "redirect_uri": self.callback_url(),
@@ -156,7 +163,6 @@ class Handler(BaseHTTPRequestHandler):
         return f"modern_english_oauth_state={state}; Path=/; Max-Age={STATE_TTL}; HttpOnly; Secure; SameSite=Lax"
 
     def github_callback(self):
-        from urllib.parse import parse_qs
         query = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
         code = query.get("code", [""])[0]
         state = query.get("state", [""])[0]
@@ -165,6 +171,10 @@ class Handler(BaseHTTPRequestHandler):
         if not code or not state or not expected_state or not hmac.compare_digest(state, expected_state) or not verify(state):
             self.redirect(PUBLIC_SITE_URL + "/signup.html?auth=invalid-state")
             return
+        state_payload = verify(state)
+        next_page = state_payload.get("next", "learner.html") if state_payload else "learner.html"
+        if next_page not in ALLOWED_NEXT:
+            next_page = "learner.html"
         try:
             token_body = urlencode({
                 "client_id": GITHUB_CLIENT_ID,
@@ -204,7 +214,7 @@ class Handler(BaseHTTPRequestHandler):
             }
             token_cookie = f"{COOKIE_NAME}={sign(session)}; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=None"
             clear_state = "modern_english_oauth_state=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
-            self.redirect(PUBLIC_SITE_URL + "/learner.html?login=success", [token_cookie, clear_state])
+            self.redirect(PUBLIC_SITE_URL + f"/{next_page}?login=success", [token_cookie, clear_state])
         except (HTTPError, OSError, ValueError, RuntimeError) as exc:
             print(f"[auth] GitHub callback failed: {exc}")
             self.redirect(PUBLIC_SITE_URL + "/signup.html?auth=failed")
