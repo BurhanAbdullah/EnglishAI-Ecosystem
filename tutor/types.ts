@@ -60,3 +60,18 @@ export interface LearningAttempt {
   errorType?: string;
   timestamp?: string;
 }
+
+export interface TutorLesson {
+  objective: string;
+  microLesson: string;
+  exercise: {
+    id: string;
+    type: 'choice' | 'short-answer' | 'free-response';
+    prompt: string;
+    choices?: string[];
+    expectedAnswer?: string;
+    hint: string;
+  };
+  difficulty: number;
+  nextAction: TutorAction;
+}
