@@ -29,7 +29,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: npm
+      - name: Verify Node and npm
+        run: node --version && npm --version
       - name: Install dependencies
         run: npm install --no-audit --no-fund
       - name: Typecheck
@@ -49,7 +50,7 @@ jobs:
       - name: Verify required pages and assets
         run: |
           set -eu
-          for f in index.html platform.html capabilities.html architecture.html research.html docs.html tutor.html learner.html join.html assets/site.css assets/learner-app.js; do
+          for f in index.html platform.html capabilities.html architecture.html research.html docs.html tutor.html learner.html join.html login.html profile.html dashboard.html admin/login.html assets/site.css assets/ux.css assets/tokens.css assets/learner-app.js assets/auth.js assets/profile.js assets/dashboard.js assets/auth-pages.js assets/admin-auth.js; do
             test -f "docs/$f"
           done
           grep -q 'Modern English' docs/index.html
@@ -57,4 +58,5 @@ jobs:
           grep -q 'Dr. Mudasir Rahman' docs/index.html
           grep -q 'Dr. Mudasir Rahman' docs/join.html
           grep -q 'Drmudasirrahman' docs/join.html
+          grep -q 'font-family' docs/assets/tokens.css
           echo "Modern English website smoke test passed."
