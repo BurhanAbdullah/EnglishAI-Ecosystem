@@ -1,8 +1,9 @@
 const AUTH_API='https://englishai-auth-api.onrender.com';
 const MCP_API='https://englishai-mcp-gateway.onrender.com/mcp';
 const MCP_PROTOCOL='2025-11-25';
+const ASSET_VERSION='2026.09.16';
 function escapeHtml(value){return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]))}
-function injectStyles(id,href){if(document.getElementById(id))return;const link=document.createElement('link');link.id=id;link.rel='stylesheet';link.href=href;document.head.appendChild(link)}
+function injectStyles(id,href){if(document.getElementById(id))return;const link=document.createElement('link');link.id=id;link.rel='stylesheet';link.href=`${href}?v=${ASSET_VERSION}`;document.head.appendChild(link)}
 function injectUxStyles(){injectStyles('modern-english-ux-css','./assets/ux.css')}
 function injectThemeStyles(){injectStyles('modern-english-theme-lock-css','./assets/theme-lock.css')}
 function injectPremiumStyles(){injectStyles('modern-english-premium-css','./assets/premium.css')}
