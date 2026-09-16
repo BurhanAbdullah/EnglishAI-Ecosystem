@@ -33,6 +33,22 @@ try {
   }
   if (!ready) throw new Error('MCP gateway did not become ready');
 
+  const pagesOrigin = 'https://burhanabdullah.github.io';
+  const preflight = await fetch(`http://127.0.0.1:${port}/mcp`, {
+    method: 'OPTIONS',
+    headers: { Origin: pagesOrigin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type' }
+  });
+  if (preflight.status !== 204 || preflight.headers.get('access-control-allow-origin') !== pagesOrigin) {
+    throw new Error(`GitHub Pages CORS preflight invalid: ${preflight.status} / ${preflight.headers.get('access-control-allow-origin')}`);
+  }
+
+  const readiness = await fetch(`http://127.0.0.1:${port}/readyz`);
+  if (!readiness.ok) throw new Error(`MCP specialist readiness failed: ${readiness.status} ${await readiness.text()}`);
+  const readinessPayload = await readiness.json();
+  if (readinessPayload?.ok !== true || !Array.isArray(readinessPayload?.checks) || readinessPayload.checks.length !== 7) {
+    throw new Error('MCP specialist readiness response incomplete');
+  }
+
   await rpc(1, 'initialize', { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'multi-agent-verifier', version: '1.0.0' } });
   const registry = payload(await rpc(2, 'tools/call', { name: 'list_capabilities', arguments: {} }));
   for (const capability of ['english-content', 'grammar', 'vocabulary', 'reading', 'writing', 'assessment', 'citation', 'tutor']) {
