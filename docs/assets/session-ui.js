@@ -1,0 +1,3 @@
+(function(){'use strict';
+function wire(){const A=window.ModernEnglishAuth;if(!A)return;const signed=!!A.getSession?.();document.querySelectorAll('[data-auth-required]').forEach(el=>{if(!signed){el.addEventListener('click',e=>{e.preventDefault();location.href='login.html?next='+encodeURIComponent(location.pathname.split('/').pop()||'index.html');});}});document.querySelectorAll('[data-user-name]').forEach(el=>{const s=A.getSession?.();if(s)el.textContent=s.user?.name||s.user?.login||'Learner';});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();})();
