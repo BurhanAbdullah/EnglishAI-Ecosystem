@@ -18,6 +18,10 @@ const rpc = async (id, method, params = {}) => {
   const jsonText = text.match(/data:\s*(\{[\s\S]*\})/)?.[1] ?? text;
   return JSON.parse(jsonText);
 };
+const toolPayload = rpcResult => {
+  const text = rpcResult?.result?.content?.map(item => item.text || '').join('') || '';
+  try { return JSON.parse(text); } catch { return null; }
+};
 
 try {
   let ready = false;
@@ -41,8 +45,8 @@ try {
       message: 'I has worked here since 2022.', attempts: []
     }
   } });
-  const firstText = JSON.stringify(first);
-  if (!firstText.includes('coachMessage') || !firstText.includes('grammar')) throw new Error('Tutor turn did not return learner-facing guidance');
+  const firstPayload = toolPayload(first);
+  if (!firstPayload?.coachMessage || !firstPayload?.lesson || firstPayload?.lesson?.exercise?.type !== 'choice') throw new Error('Tutor turn did not return a learner-facing adaptive lesson');
 
   const second = await rpc(4, 'tools/call', { name: 'call_capability', arguments: {
     capability: 'tutor', tool: 'tutor_turn', arguments: {
@@ -53,8 +57,9 @@ try {
       ]
     }
   } });
-  const secondText = JSON.stringify(second);
-  if (!secondText.includes('"action":"teach"')) throw new Error('Tutor did not adapt to repeated errors');
+  const secondPayload = toolPayload(second);
+  if (secondPayload?.action !== 'teach') throw new Error(`Tutor did not adapt to repeated errors: ${JSON.stringify(secondPayload)}`);
+  if (secondPayload.lesson?.nextAction !== 'teach') throw new Error('Adaptive lesson did not follow the teaching decision');
 
   console.log('MCP gateway verification passed: health, initialize, tools/list, tutor routing and adaptive teaching.');
 } finally {
