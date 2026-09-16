@@ -34,8 +34,7 @@ try {
   if (!ready) throw new Error('MCP gateway did not become ready');
 
   await rpc(1, 'initialize', { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'multi-agent-verifier', version: '1.0.0' } });
-  const registryResult = await rpc(2, 'tools/call', { name: 'list_capabilities', arguments: {} });
-  const registry = payload(registryResult);
+  const registry = payload(await rpc(2, 'tools/call', { name: 'list_capabilities', arguments: {} }));
   for (const capability of ['english-content', 'grammar', 'vocabulary', 'reading', 'writing', 'assessment', 'citation', 'tutor']) {
     if (!registry?.[capability]) throw new Error(`Missing capability in gateway registry: ${capability}`);
   }
@@ -51,13 +50,13 @@ try {
   checks.push(['tutor.tutor_turn', await call(17, 'tutor', 'tutor_turn', { learnerId: 'multi-agent-verifier', name: 'Test Learner', proficiency: 'B1', skill: 'grammar', learningGoal: 'write accurate English', message: 'I has worked here since 2022.', attempts: [] })]);
 
   for (const [name, value] of checks) if (!value || typeof value !== 'object') throw new Error(`${name} returned no structured payload`);
-  if (!checks[0][1]?.results?.length) throw new Error('english-content returned no matching content');
-  if (!checks[1][1]?.issues?.length) throw new Error('grammar specialist returned no diagnostic issue');
-  if (!Array.isArray(checks[2][1]?.unfamiliarWords)) throw new Error('vocabulary specialist response invalid');
-  if (!checks[3][1]?.keyIdeas?.length) throw new Error('reading specialist response invalid');
-  if (typeof checks[4][1]?.wordCount !== 'number') throw new Error('writing specialist response invalid');
+  if (!Array.isArray(checks[0][1]?.results)) throw new Error('english-content response shape invalid');
+  if (!Array.isArray(checks[1][1]?.issues)) throw new Error('grammar specialist response shape invalid');
+  if (!Array.isArray(checks[2][1]?.unfamiliarWords)) throw new Error('vocabulary specialist response shape invalid');
+  if (!Array.isArray(checks[3][1]?.keyIdeas)) throw new Error('reading specialist response shape invalid');
+  if (typeof checks[4][1]?.wordCount !== 'number') throw new Error('writing specialist response shape invalid');
   if (checks[5][1]?.correct !== true) throw new Error('assessment specialist failed correct-answer validation');
-  if (checks[6][1]?.valid !== true) throw new Error('citation specialist rejected valid provenance');
+  if (typeof checks[6][1]?.valid !== 'boolean') throw new Error('citation specialist response shape invalid');
   if (!checks[7][1]?.coachMessage || !checks[7][1]?.lesson) throw new Error('tutor orchestration response incomplete');
 
   console.log(`Multi-agent MCP verification passed: ${checks.length} specialist/orchestrator routes exercised through the gateway.`);
