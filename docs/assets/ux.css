@@ -1,9 +1,4 @@
 /* Component-level UX polish. Global tokens and primitives live in tokens.css/site.css. */
-body.internal-page{background:linear-gradient(180deg,#fff 0%,#fff 72%,#fafafa 100%)}
-body.internal-page .nav{gap:var(--space-8);background:rgba(255,255,255,.94);box-shadow:var(--shadow-nav)}
-body.internal-page .desktop-nav{gap:var(--space-2)}
-body.internal-page .desktop-nav>a{padding:10px 15px;font-size:var(--text-sm);letter-spacing:-.01em}
-body.internal-page .nav-actions{gap:12px}
 .subhero{max-width:var(--content-width);margin:0 auto;padding:var(--space-hero) var(--space-6) var(--space-10)}
 .subhero h1{max-width:900px;margin-bottom:var(--space-6)}
 .subhero .lead{font-size:var(--text-lg);line-height:var(--leading-relaxed);max-width:780px}
@@ -33,7 +28,7 @@ footer p{font-size:var(--text-sm);color:#d0d3d8;max-width:420px}
 .eyebrow{font-size:var(--text-xs);letter-spacing:.16em;margin-bottom:var(--space-3)}
 .local{font-size:var(--text-sm);line-height:1.65}
 .field label{font-size:var(--text-sm);margin-bottom:7px;display:block}
-.field input,.field select,.field textarea{font-family:inherit;font-size:var(--text-base);padding:13px 14px;border-radius:12px;border:1px solid var(--color-border-strong);background:#fff;color:var(--ink);outline:0;transition:border-color var(--motion-fast) var(--ease),box-shadow var(--motion-fast) var(--ease)}
-.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{border-color:var(--red);box-shadow:0 0 0 4px rgba(200,30,30,.12)}
-@media(max-width:900px){.subhero{padding:88px 20px 58px}.section{padding-top:72px;padding-bottom:72px}.section-heading{margin-bottom:var(--space-8)}.subhero .lead{font-size:18px}.platform-grid,.agent-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.subhero{padding:72px 18px 46px}.section{padding:62px 18px}.platform-grid,.agent-grid{grid-template-columns:1fr}p,li,td,th{font-size:var(--text-base)}.btn{width:100%}.actions .btn{width:auto}.project-lead{align-items:flex-start}.project-lead img{width:72px;height:72px}}
+/* All pages inherit the exact same header geometry from site.css. */
+.nav,.desktop-nav,.desktop-nav>a,.nav-actions{box-sizing:border-box}
+@media(max-width:900px){.section{padding-top:88px;padding-bottom:88px}.subhero{padding-top:88px}}
+@media(max-width:600px){.subhero{padding:70px 18px}.section{padding:70px 18px}}
